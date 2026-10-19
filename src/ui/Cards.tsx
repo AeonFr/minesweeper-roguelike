@@ -1,0 +1,94 @@
+import { CARDS, CONSUMABLES, cardBaseMult, cardChips, sellPrice, type CardInst, type GameState, type Rarity } from '../engine'
+import { tipProps } from '../tip'
+
+const RARITY_LABEL: Record<Rarity, string> = {
+  common: 'Common',
+  uncommon: 'Uncommon',
+  rare: 'Rare',
+  epic: 'Epic',
+  legendary: 'Legendary',
+}
+
+function CardTip({ id, card, game, sell }: { id: string; card?: CardInst; game: GameState; sell?: boolean }) {
+  const def = CARDS[id]
+  const lines: string[] = []
+  if (card) {
+    const m = cardBaseMult(card, game)
+    if (m > 0) lines.push(`Multiplier from this card: +${m.toFixed(2)}x`)
+    if (card.money > 0) lines.push(`Earned this round: $${card.money}`)
+    if (card.score > 0) lines.push(`Points added this round: ${Math.round(card.score * 100) / 100}`)
+    if (card.flash.length) lines.push(`Last move: ${card.flash.join(' · ')}`)
+    if (card.log) lines.push(card.log)
+  }
+  return (
+    <>
+      <div className="tip-title">
+        <span>
+          {def.emoji} {def.name}
+        </span>
+        <span className={`rarity r-${def.rarity}`}>{RARITY_LABEL[def.rarity]}</span>
+      </div>
+      <p>{def.desc}</p>
+      {lines.map((l, i) => (
+        <p key={i} className="tip-status">
+          {l}
+        </p>
+      ))}
+      {sell && <p className="tip-status">Sells for ${sellPrice(def.price)}</p>}
+    </>
+  )
+}
+
+export function CardView({ id, card, game, sell, big }: { id: string; card?: CardInst; game: GameState; sell?: boolean; big?: boolean }) {
+  const def = CARDS[id]
+  const chips = card ? cardChips(card, game) : []
+  const flash = card?.flash.filter((f) => !chips.some((c) => c.text === f)).slice(0, 1) ?? []
+  return (
+    <div className={`card r-${def.rarity} ${big ? 'big' : ''}`} {...tipProps(() => <CardTip id={id} card={card} game={game} sell={sell} />)}>
+      <div className="card-emoji">{def.emoji}</div>
+      <div className="card-name">{def.name}</div>
+      <div className="chips">
+        {chips.map((c, i) => (
+          <span key={i} className={`chip chip-${c.kind}`}>
+            {c.text}
+          </span>
+        ))}
+        {flash.map((f, i) => (
+          <span key={'f' + i} className="chip chip-flash">
+            {f}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; big?: boolean }) {
+  const def = CONSUMABLES[id]
+  return (
+    <div
+      className={`card cons ${big ? 'big' : ''}`}
+      {...tipProps(() => (
+        <>
+          <div className="tip-title">
+            <span>
+              {def.emoji} {def.name}
+            </span>
+            <span className="rarity r-consumable">Consumable</span>
+          </div>
+          <p>{def.desc}</p>
+          {sell && <p className="tip-status">Sells for ${sellPrice(def.price)}</p>}
+        </>
+      ))}
+    >
+      <div className="card-emoji">{def.emoji}</div>
+      <div className="card-name">{def.name}</div>
+    </div>
+  )
+}
+
+export const EmptySlot = ({ label }: { label: string }) => (
+  <div className="card empty">
+    <span>{label}</span>
+  </div>
+)
