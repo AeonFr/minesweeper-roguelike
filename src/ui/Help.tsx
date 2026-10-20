@@ -17,7 +17,7 @@ export function Help() {
         <li>The first tap of a round is always safe.</li>
       </ul>
       <h3>Bonus cells</h3>
-      <p className="muted">Shiny tiles appear after your first move. They always sit on safe ground, so uncover them for free perks.</p>
+      <p className="muted">Some safe tiles hide a bonus cell. You only find out when you uncover them, and never on a mine. Afterwards, hover or tap the icon on the tile to see what it did.</p>
       <ul className="bonus-list">
         {(Object.keys(BONUS_INFO) as BonusKind[]).map((k) => (
           <li key={k}>

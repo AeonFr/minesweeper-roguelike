@@ -223,7 +223,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
               face = <Icon file={UI_ICON.mine} size={art} px={false} />
             } else {
               face = t.n || ''
-              if (t.bonus) cls.push('claimed')
+              if (t.bonus) cls.push('claimed', `bonus-${t.bonus}`)
             }
           } else {
             cls.push('hidden')
@@ -234,15 +234,30 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
               cls.push('mine')
               face = <Icon file={UI_ICON.mine} size={art} px={false} />
             }
-            if (t.bonus && !t.flagged) cls.push('has-bonus', `bonus-${t.bonus}`)
           }
+          // Bonus cells stay secret until uncovered; afterwards the tile explains what it did.
+          const bonus = t.revealed && !t.exploded ? t.bonus : null
+          const tip = bonus
+            ? tipProps(() => (
+                <>
+                  <div className="tip-title">
+                    <span className="tip-name">
+                      <Icon file={BONUS_ICON[bonus]} size={16} px={false} /> {BONUS_INFO[bonus].name}
+                    </span>
+                    <span className="rarity r-consumable">Bonus cell</span>
+                  </div>
+                  <p>{BONUS_INFO[bonus].desc}</p>
+                  <p className="tip-status">Already collected.</p>
+                </>
+              ))
+            : {}
           return (
-            <div key={i} data-i={i} className={cls.join(' ')}>
+            <div key={i} data-i={i} className={cls.join(' ')} {...tip}>
               <span className="face">
                 {face}
-                {t.bonus && !t.flagged && !t.exploded && (
-                  <span className="bonus-art" title={t.revealed ? '' : BONUS_INFO[t.bonus].name}>
-                    <Icon file={BONUS_ICON[t.bonus]} size={t.revealed ? Math.round(size * 0.4) : art} px={false} />
+                {bonus && (
+                  <span className="bonus-art">
+                    <Icon file={BONUS_ICON[bonus]} size={Math.round(size * 0.46)} px={false} />
                   </span>
                 )}
               </span>

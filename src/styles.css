@@ -48,7 +48,7 @@ html[data-hide~='fx'] .layer-fx { display: none !important; }
 html[data-hide~='fx'] * { animation: none !important; transition: none !important; }
 html[data-hide~='bg'] .layer-bg { display: none !important; }
 html[data-hide~='bonus'] .bonus-art { display: none !important; }
-html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-shadow: var(--tile-raised); }
+html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shadow: var(--tile-raised); }
 
 /* ───────── shell ───────── */
 .app { position: fixed; inset: 0; display: flex; justify-content: center; background: var(--desktop); overflow: hidden; }
@@ -133,17 +133,17 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 
 /* bonus cells: colourful, each with its own animation, but still bevelled like the rest */
 .bonus-art { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: calc(var(--cell) * .6); pointer-events: none; filter: drop-shadow(0 1px 1px #0008); }
-.tile.revealed.claimed .bonus-art { inset: auto; right: 0; top: -1px; font-size: calc(var(--cell) * .32); opacity: .9; animation: none; }
-.tile.has-bonus .face { background: linear-gradient(145deg, var(--b1), var(--b2)); box-shadow: inset 2px 2px rgba(255,255,255,.85), inset -2px -2px rgba(0,0,0,.5), 0 0 calc(var(--cell) * .25) var(--b2); }
+.tile.claimed .bonus-art { inset: auto; right: 0; top: -1px; }
+.tile.claimed .face { background: linear-gradient(145deg, var(--b1), var(--b2)); box-shadow: inset 2px 2px rgba(255,255,255,.85), inset -2px -2px rgba(0,0,0,.5), 0 0 calc(var(--cell) * .25) var(--b2); }
 .mini-bonus { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; background: linear-gradient(145deg, var(--b1), var(--b2)); box-shadow: inset 2px 2px rgba(255,255,255,.85), inset -2px -2px rgba(0,0,0,.5); flex: none; }
-.bonus-coin { --b1: #fde68a; --b2: #d97706; } .has-bonus.bonus-coin .bonus-art { animation: spinY 2.4s linear infinite; }
-.bonus-star { --b1: #fef9c3; --b2: #f59e0b; } .has-bonus.bonus-star .bonus-art { animation: twinkle 1.4s ease-in-out infinite; }
-.bonus-spark { --b1: #f5d0fe; --b2: #a21caf; } .has-bonus.bonus-spark .face { animation: sparkHue 2.4s linear infinite; } .has-bonus.bonus-spark .bonus-art { animation: twinkle 1s ease-in-out infinite; }
-.bonus-flame { --b1: #fdba74; --b2: #dc2626; } .has-bonus.bonus-flame .bonus-art { animation: flicker .5s ease-in-out infinite alternate; transform-origin: 50% 90%; }
-.bonus-crystal { --b1: #ddd6fe; --b2: #5b21b6; } .has-bonus.bonus-crystal .bonus-art { animation: floaty 2s ease-in-out infinite; }
-.bonus-gift { --b1: #fecaca; --b2: #15803d; } .has-bonus.bonus-gift .bonus-art { animation: hop 1.3s ease-in-out infinite; }
-.bonus-shield { --b1: #cffafe; --b2: #0e7490; } .has-bonus.bonus-shield .face { animation: ring 1.8s ease-out infinite; }
-.bonus-heart { --b1: #fbcfe8; --b2: #be185d; } .has-bonus.bonus-heart .bonus-art { animation: beat .9s ease-in-out infinite; }
+.bonus-coin { --b1: #fde68a; --b2: #d97706; } .tile.claimed.bonus-coin .bonus-art { animation: spinY 2.4s linear infinite; }
+.bonus-star { --b1: #fef9c3; --b2: #f59e0b; } .tile.claimed.bonus-star .bonus-art { animation: twinkle 1.4s ease-in-out infinite; }
+.bonus-spark { --b1: #f5d0fe; --b2: #a21caf; } .tile.claimed.bonus-spark .face { animation: sparkHue 2.4s linear infinite; } .tile.claimed.bonus-spark .bonus-art { animation: twinkle 1s ease-in-out infinite; }
+.bonus-flame { --b1: #fdba74; --b2: #dc2626; } .tile.claimed.bonus-flame .bonus-art { animation: flicker .5s ease-in-out infinite alternate; transform-origin: 50% 90%; }
+.bonus-crystal { --b1: #ddd6fe; --b2: #5b21b6; } .tile.claimed.bonus-crystal .bonus-art { animation: floaty 2s ease-in-out infinite; }
+.bonus-gift { --b1: #fecaca; --b2: #15803d; } .tile.claimed.bonus-gift .bonus-art { animation: hop 1.3s ease-in-out infinite; }
+.bonus-shield { --b1: #cffafe; --b2: #0e7490; } .tile.claimed.bonus-shield .face { animation: ring 1.8s ease-out infinite; }
+.bonus-heart { --b1: #fbcfe8; --b2: #be185d; } .tile.claimed.bonus-heart .bonus-art { animation: beat .9s ease-in-out infinite; }
 @keyframes spinY { to { transform: rotateY(360deg); } }
 @keyframes twinkle { 50% { transform: scale(1.25) rotate(14deg); } }
 @keyframes sparkHue { to { filter: hue-rotate(360deg); } }
