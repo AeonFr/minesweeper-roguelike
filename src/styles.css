@@ -92,9 +92,10 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
 
 /* ───────── score bar ───────── */
 .scorebar { flex: none; display: flex; flex-direction: column; gap: 5px; padding: 6px; background: var(--face); box-shadow: var(--raised); }
-.progress { position: relative; height: 22px; background: #fff; box-shadow: var(--sunken); padding: 3px; overflow: hidden; }
+.progress { position: relative; height: 18px; background: #fff; box-shadow: var(--sunken); padding: 3px; overflow: hidden; }
 .progress .fill { position: absolute; inset: 3px auto 3px 3px; max-width: calc(100% - 6px); background: repeating-linear-gradient(90deg, var(--navy) 0 10px, transparent 10px 12px); transition: width .35s steps(12); }
-.progress span { position: relative; display: block; text-align: center; font-weight: bold; line-height: 16px; mix-blend-mode: difference; color: #fff; font-variant-numeric: tabular-nums; }
+.score-line { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; padding: 0 2px; }
+.score-line b { font-size: 17px; font-variant-numeric: tabular-nums; margin-left: 4px; }
 .calc { display: flex; align-items: center; gap: 6px; height: 48px; }
 .chipbox { width: 76px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; background: #000; box-shadow: var(--sunken); }
 .chipbox small { font-size: 12px; letter-spacing: .12em; font-weight: bold; color: #aaa; }

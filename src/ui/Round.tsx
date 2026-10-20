@@ -30,7 +30,7 @@ function ScoreBar({ game }: { game: GameState }) {
   return (
     <section className="scorebar layer-ui">
       <div
-        className="progress"
+        className="score-line"
         {...infoTip(
           'Score / target',
           r.target
@@ -38,10 +38,15 @@ function ScoreBar({ game }: { game: GameState }) {
             : 'The target is revealed when you make your first move: it is the total of every number on the board.',
         )}
       >
-        <div className="fill" style={{ width: `${pct}%` }} />
         <span>
-          {fmt(r.score)} / {r.target || '?'}
+          Score <b>{fmt(r.score)}</b>
         </span>
+        <span>
+          Target <b>{r.target || '?'}</b>
+        </span>
+      </div>
+      <div className="progress" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
+        <div className="fill" style={{ width: `${pct}%` }} />
       </div>
       <div className="calc">
         <div className="chipbox chipsbox" {...infoTip('Chips', 'Points from the tiles you uncovered with your last move: each tile is worth its number.')}>
