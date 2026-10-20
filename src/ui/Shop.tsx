@@ -2,6 +2,8 @@ import { CARD_SLOTS, CARDS, CONSUMABLES, CONSUMABLE_SLOTS, mineCount, rerollCost
 import { dispatch } from '../store'
 import { CardView, ConsumableView, EmptySlot } from './Cards'
 import { Hud } from './Hud'
+import { Icon } from './Icon'
+import { UI_ICON } from './icons'
 import { Win } from './Modal'
 
 export function Shop({ game }: { game: GameState }) {
@@ -83,7 +85,7 @@ export function Shop({ game }: { game: GameState }) {
             )}
             <div className="offer">
               <button className="reroll" disabled={game.money < cost} onClick={() => dispatch({ type: 'reroll' })}>
-                <span>🔄</span>
+                <Icon file={UI_ICON.refresh} size={32} />
                 <small>Reroll ${cost}</small>
               </button>
               <button className="btn buy ghost" disabled>
@@ -99,14 +101,14 @@ export function Shop({ game }: { game: GameState }) {
             {Array.from({ length: CARD_SLOTS }, (_, k) => {
               const c = game.cards[k]
               return c ? (
-                <div className="slot-with-btn" key={c.uid}>
+                <div className="slot-with-btn" key={`card-${c.uid}`}>
                   <CardView id={c.id} card={c} game={game} sell />
                   <button className="btn small" onClick={() => dispatch({ type: 'sellCard', slot: k })}>
                     Sell ${sellPrice(CARDS[c.id].price)}
                   </button>
                 </div>
               ) : (
-                <div className="slot-with-btn" key={k}>
+                <div className="slot-with-btn" key={`empty-card-${k}`}>
                   <EmptySlot label="card" />
                   <button className="btn small ghost" disabled>
                     &nbsp;
@@ -126,7 +128,7 @@ export function Shop({ game }: { game: GameState }) {
                   </button>
                 </div>
               ) : (
-                <div className="slot-with-btn" key={k}>
+                <div className="slot-with-btn" key={`empty-item-${k}`}>
                   <EmptySlot label="item" kind="item" />
                   <button className="btn small ghost" disabled>
                     &nbsp;

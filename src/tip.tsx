@@ -20,6 +20,15 @@ export function hideTip() {
   emit()
 }
 
+/**
+ * The `click` that follows a tap reports pointerType "mouse" in WebKit, so the real
+ * pointer type is remembered from pointerdown instead.
+ */
+let lastPointerType = 'mouse'
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', (e) => (lastPointerType = e.pointerType), true)
+}
+
 /** Hover on mouse, tap-to-toggle on touch. Spread onto any element. */
 export function tipProps(render: () => ReactNode) {
   return {
@@ -31,8 +40,7 @@ export function tipProps(render: () => ReactNode) {
       if (e.pointerType === 'mouse') hideTip()
     },
     onClick: (e: React.MouseEvent<HTMLElement>) => {
-      const type = (e.nativeEvent as PointerEvent).pointerType
-      if (type === 'mouse') return
+      if (lastPointerType === 'mouse') return
       const el = e.currentTarget
       if (tip?.anchor === el) hideTip()
       else showTip(el, render)
@@ -45,6 +53,15 @@ if (typeof document !== 'undefined') {
     if (tip && !(e.target as HTMLElement).closest('[data-tip]')) hideTip()
   })
 }
+
+/** Simple title + explanation tooltip. */
+export const infoTip = (title: ReactNode, body: ReactNode) =>
+  tipProps(() => (
+    <>
+      <div className="tip-title">{title}</div>
+      <p>{body}</p>
+    </>
+  ))
 
 export function TipLayer() {
   const cur = useSyncExternalStore(

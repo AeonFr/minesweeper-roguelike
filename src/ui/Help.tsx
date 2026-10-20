@@ -1,4 +1,6 @@
 import { BONUS_INFO, type BonusKind } from '../engine'
+import { Icon } from './Icon'
+import { BONUS_ICON } from './icons'
 
 export function Help() {
   return (
@@ -6,7 +8,7 @@ export function Help() {
       <h3>How to play</h3>
       <ul>
         <li>
-          <b>Tap</b> a tile to uncover it, <b>hold</b> (or right-click) to flag it. Use the ⛏️/🚩 button to swap. Tap a number whose flags are
+          <b>Tap</b> a tile to uncover it, <b>hold</b> (or right-click) to flag it. Use the Dig/Flag button to swap. Tap a number whose flags are
           all placed to uncover the rest around it.
         </li>
         <li>Every number is worth that many chips. Chips × multiplier = score. Reach the target (the total of the whole board) to win the round.</li>
@@ -19,7 +21,9 @@ export function Help() {
       <ul className="bonus-list">
         {(Object.keys(BONUS_INFO) as BonusKind[]).map((k) => (
           <li key={k}>
-            <span className={`mini-bonus bonus-${k}`}>{BONUS_INFO[k].emoji}</span>
+            <span className={`mini-bonus bonus-${k}`}>
+              <Icon file={BONUS_ICON[k]} size={20} px={false} />
+            </span>
             <span>
               <b>{BONUS_INFO[k].name}</b>: {BONUS_INFO[k].desc}
             </span>

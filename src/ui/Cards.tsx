@@ -1,5 +1,7 @@
 import { CARDS, CONSUMABLES, cardBaseMult, cardChips, sellPrice, type CardInst, type GameState, type Rarity } from '../engine'
 import { tipProps } from '../tip'
+import { Icon, Rich } from './Icon'
+import { CARD_ICON, ITEM_ICON } from './icons'
 
 const RARITY_LABEL: Record<Rarity, string> = {
   common: 'Common',
@@ -23,15 +25,15 @@ function CardTip({ id, card, game, sell }: { id: string; card?: CardInst; game: 
   return (
     <>
       <div className="tip-title">
-        <span>
-          {def.emoji} {def.name}
+        <span className="tip-name">
+          <Icon file={CARD_ICON[id]} size={16} px={false} /> {def.name}
         </span>
         <span className={`rarity r-${def.rarity}`}>{RARITY_LABEL[def.rarity]}</span>
       </div>
       <p>{def.desc}</p>
       {lines.map((l, i) => (
         <p key={i} className="tip-status">
-          {l}
+          <Rich text={l} />
         </p>
       ))}
       {sell && <p className="tip-status">Sells for ${sellPrice(def.price)}</p>}
@@ -46,7 +48,9 @@ export function CardView({ id, card, game, sell, big }: { id: string; card?: Car
   return (
     <div className={`card r-${def.rarity} ${big ? 'big' : ''}`} {...tipProps(() => <CardTip id={id} card={card} game={game} sell={sell} />)}>
       <div className="card-head" />
-      <div className="card-emoji">{def.emoji}</div>
+      <div className="card-emoji">
+        <Icon file={CARD_ICON[id]} size={big ? 64 : 32} />
+      </div>
       <div className="card-name">{def.name}</div>
       <div className="chips">
         {chips.map((c, i) => (
@@ -56,7 +60,7 @@ export function CardView({ id, card, game, sell, big }: { id: string; card?: Car
         ))}
         {flash.map((f, i) => (
           <span key={'f' + i} className="chip chip-flash">
-            {f}
+            <Rich text={f} size={11} />
           </span>
         ))}
       </div>
@@ -72,8 +76,8 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
       {...tipProps(() => (
         <>
           <div className="tip-title">
-            <span>
-              {def.emoji} {def.name}
+            <span className="tip-name">
+              <Icon file={ITEM_ICON[id]} size={16} px={false} /> {def.name}
             </span>
             <span className="rarity r-consumable">Item</span>
           </div>
@@ -82,7 +86,9 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
         </>
       ))}
     >
-      <div className="card-emoji">{def.emoji}</div>
+      <div className="card-emoji">
+        <Icon file={ITEM_ICON[id]} size={big ? 64 : 32} />
+      </div>
       <div className="card-name">{def.name}</div>
     </div>
   )

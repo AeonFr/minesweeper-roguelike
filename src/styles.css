@@ -24,6 +24,14 @@
 html, body, #root { margin: 0; height: 100%; overflow: hidden; background: var(--desktop); overscroll-behavior: none; }
 body, button, input, select { font-family: 'Pixelated MS Sans Serif', Arial, sans-serif; font-size: 12px; color: #000; }
 button { min-width: 0; cursor: pointer; }
+/* Nothing in the game is text to select; things with a tooltip get the help cursor. */
+body { cursor: default; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+input, code { user-select: text; -webkit-user-select: text; }
+[data-tip] { cursor: help; }
+.icon { display: inline-block; vertical-align: middle; flex: none; image-rendering: auto; -webkit-user-drag: none; }
+.icon.px { image-rendering: pixelated; }
+.icon.inline { margin: -2px 2px 0 0; }
+.tip-name { display: inline-flex; align-items: center; gap: 4px; }
 button:disabled { cursor: default; }
 b { font-variant-numeric: tabular-nums; }
 code { background: #fff; box-shadow: var(--sunken); padding: 0 4px; }
@@ -149,7 +157,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 
 .card, .item {
   position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  background: var(--face); box-shadow: var(--raised); cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; padding: 0 2px 3px;
+  background: var(--face); box-shadow: var(--raised); touch-action: manipulation; padding: 0 2px 3px;
 }
 .card { aspect-ratio: 5 / 7; --rc: var(--common); }
 .item { aspect-ratio: 1 / 1; padding-top: 3px; }
@@ -189,14 +197,14 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .btn.buy { padding: 6px 2px; }
 .link { background: none; border: 0; box-shadow: none; color: #0000ee; text-decoration: underline; padding: 0; }
 
-.modal-backdrop { position: absolute; inset: 0; z-index: 60; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; padding: 12px; }
+.modal-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; padding: 12px; }
 .modal { width: min(440px, 100%); max-height: 94%; overflow: auto; }
 .modal h2 { font-size: 15px; margin-bottom: 6px; }
 .modal-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; flex-wrap: wrap; }
 .toggle-row { padding: 6px 2px; }
 .stats { width: 100%; margin-top: 8px; border-collapse: collapse; }
 .stats td { padding: 3px 2px; border-bottom: 1px solid var(--lo); } .stats td:last-child { text-align: right; font-weight: bold; }
-.peek-back { position: absolute; z-index: 60; left: 50%; bottom: 24px; transform: translateX(-50%); padding: 7px 12px; font-weight: bold; background: var(--face); border: 0; box-shadow: var(--raised); }
+.peek-back { position: fixed; z-index: 60; left: 50%; bottom: 24px; transform: translateX(-50%); padding: 7px 12px; font-weight: bold; background: var(--face); border: 0; box-shadow: var(--raised); }
 .help h3 { margin: 10px 0 4px; font-size: 12px; } .help ul { margin: 4px 0; padding-left: 18px; line-height: 1.4; }
 .help .bonus-list { list-style: none; padding: 0; display: grid; gap: 5px; } .help .bonus-list li { display: flex; gap: 8px; align-items: center; }
 
@@ -208,7 +216,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .r-uncommon.rarity { background: var(--uncommon); } .r-rare.rarity { background: var(--rare); } .r-epic.rarity { background: var(--epic); }
 .r-legendary.rarity { background: var(--legendary); } .r-consumable.rarity { background: var(--desktop); }
 .mult-table { width: 100%; margin-top: 6px; border-collapse: collapse; } .mult-table td:last-child { text-align: right; font-weight: bold; font-variant-numeric: tabular-nums; }
-.toast { position: absolute; z-index: 90; top: 56px; left: 50%; transform: translateX(-50%); background: var(--tip); border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0,0,0,.4); padding: 5px 12px; font-weight: bold; animation: toast 2s steps(20) forwards; pointer-events: none; white-space: nowrap; }
+.toast { position: fixed; z-index: 90; top: 56px; left: 50%; transform: translateX(-50%); background: var(--tip); border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0,0,0,.4); padding: 5px 12px; font-weight: bold; animation: toast 2s steps(20) forwards; pointer-events: none; white-space: nowrap; }
 @keyframes toast { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
 
 /* ───────── shop ───────── */
@@ -254,3 +262,10 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 @media (max-height: 640px) and (max-width: 899px) {
   .events { display: none; } .mode-toggle { min-height: 48px; } .mode-toggle small { display: none; }
 }
+
+.modal h3 { margin: 10px 0 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.modal .why { margin: 2px 0 4px; font-size: 13px; }
+.stats .total td { border-top: 2px solid var(--lo); font-weight: bold; }
+.triggers { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 4px; }
+.triggers li { display: flex; align-items: center; gap: 6px; background: var(--tip); border: 1px solid #000; padding: 3px 6px; }
+.mines-left { display: inline-flex; align-items: center; gap: 3px; }

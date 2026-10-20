@@ -1,0 +1,3 @@
+Windows 95-style icons from https://github.com/AlexBSoft/win95.css/tree/master/assets/icons
+(originally collected at https://alexmeub.com/old-windows-icons/).
+heart.svg and flag.svg are original pixel-art drawings made for this project.

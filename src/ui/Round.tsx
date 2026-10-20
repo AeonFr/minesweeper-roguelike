@@ -1,9 +1,21 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { BONUS_INFO, CONSUMABLE_SLOTS, CARD_SLOTS, mineCount, multBreakdown, neighbors, roundSpec, type GameState } from '../engine'
+import {
+  BONUS_INFO,
+  CARDS,
+  CARD_SLOTS,
+  CONSUMABLE_SLOTS,
+  mineCount,
+  multBreakdown,
+  neighbors,
+  roundSpec,
+  type GameState,
+} from '../engine'
 import { dispatch, newRun, quitToMenu } from '../store'
-import { tipProps } from '../tip'
+import { infoTip, tipProps } from '../tip'
 import { CardView, ConsumableView, EmptySlot } from './Cards'
 import { Hud } from './Hud'
+import { Icon, Rich } from './Icon'
+import { BONUS_ICON, CARD_ICON, UI_ICON } from './icons'
 import { Modal, Win } from './Modal'
 
 const fmt = (n: number) => (Math.round(n * 10) / 10).toFixed(1)
@@ -17,22 +29,22 @@ function ScoreBar({ game }: { game: GameState }) {
   const pct = r.target ? Math.min(100, (r.score / r.target) * 100) : 0
   return (
     <section className="scorebar layer-ui">
-      <div className="progress">
+      <div
+        className="progress"
+        {...infoTip(
+          'Score / target',
+          r.target
+            ? `Reach ${r.target} points to clear the round. The target is the total of every number on the board, but multipliers usually get you there before you uncover everything.`
+            : 'The target is revealed when you make your first move: it is the total of every number on the board.',
+        )}
+      >
         <div className="fill" style={{ width: `${pct}%` }} />
         <span>
           {fmt(r.score)} / {r.target || '?'}
         </span>
       </div>
       <div className="calc">
-        <div
-          className="chipbox chipsbox"
-          {...tipProps(() => (
-            <>
-              <div className="tip-title">Chips</div>
-              <p>Points from the tiles you uncovered with your last move: each tile is worth its number.</p>
-            </>
-          ))}
-        >
+        <div className="chipbox chipsbox" {...infoTip('Chips', 'Points from the tiles you uncovered with your last move: each tile is worth its number.')}>
           <small>CHIPS</small>
           <b>{last ? Math.round(last.points * 10) / 10 : 0}</b>
         </div>
@@ -59,18 +71,40 @@ function ScoreBar({ game }: { game: GameState }) {
           <small>MULT</small>
           <b>{mb.total.toFixed(2)}</b>
         </div>
-        <div className={`gain ${last?.hit ? 'bad' : ''}`} key={`${game.stats.moves}-${last?.gain}`}>
-          {last ? (last.hit ? (last.blocked ? '🛡️' : '💥') : `+${fmt(last.gain)}`) : ''}
+        <div
+          className={`gain ${last?.hit ? 'bad' : ''}`}
+          key={`${game.stats.moves}-${last?.gain}`}
+          {...infoTip(
+            'Last move',
+            last
+              ? last.hit
+                ? last.blocked
+                  ? 'You hit a mine, but a shield absorbed it.'
+                  : 'You hit a mine: a heart was lost and your streak was reset.'
+                : `Your last move scored ${fmt(last.gain)} points in total: tiles × multiplier, plus any bonus cells and card effects.`
+              : 'Your points from the last move show up here.',
+          )}
+        >
+          {last ? (last.hit ? <Icon file={last.blocked ? UI_ICON.shield : UI_ICON.mine} size={24} px={false} /> : `+${fmt(last.gain)}`) : ''}
         </div>
-        <div className={`streak ${r.streak >= 10 ? 'hot' : ''}`}>
-          🔥<b>{r.streak}</b>
+        <div
+          className={`streak ${r.streak >= 10 ? 'hot' : ''}`}
+          {...infoTip('Streak', `${r.streak} safe moves in a row. Each one adds +${mb.step.toFixed(2)} to the multiplier until you hit a mine.`)}
+        >
+          <Icon file={UI_ICON.streak} size={16} px={false} />
+          <b>{r.streak}</b>
         </div>
-        {r.shield > 0 && <div className="shield">🛡️{r.shield}</div>}
+        {r.shield > 0 && (
+          <div className="shield" {...infoTip('Shield', `The next ${r.shield > 1 ? r.shield + ' mines you hit are' : 'mine you hit is'} harmless.`)}>
+            <Icon file={UI_ICON.shield} size={16} px={false} />
+            {r.shield}
+          </div>
+        )}
       </div>
       <div className="events">
         {last?.events.slice(0, 3).map((e, i) => (
-          <span key={`${game.stats.moves}-${i}`} className="event">
-            {e}
+          <span key={`${game.stats.moves}-${i}`} className="event" {...infoTip('Triggered by your last move', <Rich text={e} />)}>
+            <Rich text={e} />
           </span>
         ))}
       </div>
@@ -92,6 +126,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
   const pointerType = useRef('mouse')
   const lost = game.phase === 'lost'
   const playing = game.phase === 'round'
+  const art = Math.round(size * 0.68)
 
   useLayoutEffect(() => {
     const el = wrap.current!
@@ -185,7 +220,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
             cls.push('revealed', `n${t.n}`)
             if (t.exploded) {
               cls.push('exploded')
-              face = '💥'
+              face = <Icon file={UI_ICON.mine} size={art} px={false} />
             } else {
               face = t.n || ''
               if (t.bonus) cls.push('claimed')
@@ -194,10 +229,10 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
             cls.push('hidden')
             if (t.flagged) {
               cls.push('flagged')
-              face = '🚩'
+              face = <Icon file={UI_ICON.flag} size={art} px={false} />
             } else if (lost && t.mine) {
               cls.push('mine')
-              face = '💣'
+              face = <Icon file={UI_ICON.mine} size={art} px={false} />
             }
             if (t.bonus && !t.flagged) cls.push('has-bonus', `bonus-${t.bonus}`)
           }
@@ -205,9 +240,9 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
             <div key={i} data-i={i} className={cls.join(' ')}>
               <span className="face">
                 {face}
-                {t.bonus && !t.flagged && (!t.revealed || !t.exploded) && (
+                {t.bonus && !t.flagged && !t.exploded && (
                   <span className="bonus-art" title={t.revealed ? '' : BONUS_INFO[t.bonus].name}>
-                    {BONUS_INFO[t.bonus].emoji}
+                    <Icon file={BONUS_ICON[t.bonus]} size={t.revealed ? Math.round(size * 0.4) : art} px={false} />
                   </span>
                 )}
               </span>
@@ -228,21 +263,21 @@ function Tray({ game, mode, setMode }: { game: GameState; mode: 'dig' | 'flag'; 
       <div className="slots cards">
         {Array.from({ length: CARD_SLOTS }, (_, k) => {
           const c = game.cards[k]
-          return c ? <CardView key={c.uid} id={c.id} card={c} game={game} /> : <EmptySlot key={k} label="card" />
+          return c ? <CardView key={`card-${c.uid}`} id={c.id} card={c} game={game} /> : <EmptySlot key={`empty-${k}`} label="card" />
         })}
       </div>
       <div className="slots lower">
         {Array.from({ length: CONSUMABLE_SLOTS }, (_, k) => {
           const id = game.consumables[k]
           return id ? (
-            <div key={`${id}-${k}`} className="slot-with-btn">
+            <div key={`item-${id}-${k}`} className="slot-with-btn">
               <ConsumableView id={id} />
               <button className="btn small" disabled={!playing} onClick={() => dispatch({ type: 'useConsumable', slot: k })}>
                 Use
               </button>
             </div>
           ) : (
-            <div key={k} className="slot-with-btn">
+            <div key={`empty-${k}`} className="slot-with-btn">
               <EmptySlot label="item" kind="item" />
               <button className="btn small ghost" disabled>
                 &nbsp;
@@ -251,12 +286,95 @@ function Tray({ game, mode, setMode }: { game: GameState; mode: 'dig' | 'flag'; 
           )
         })}
         <button className={`mode-toggle ${mode}`} onClick={() => setMode(mode === 'dig' ? 'flag' : 'dig')} aria-label="Toggle dig or flag mode">
-          <span className="mode-icon">{mode === 'dig' ? '⛏️' : '🚩'}</span>
+          <span className="mode-icon">
+            <Icon file={mode === 'dig' ? UI_ICON.dig : UI_ICON.flag} size={28} />
+          </span>
           <span className="mode-text">{mode === 'dig' ? 'Digging' : 'Flagging'}</span>
           <small>hold = {mode === 'dig' ? 'flag' : 'dig'}</small>
         </button>
       </div>
     </footer>
+  )
+}
+
+// ───────────────────────── round clear summary ─────────────────────────
+
+/** Shown after the winning move, before the shop, so you can see exactly why the round ended. */
+function RoundClear({ game, onContinue }: { game: GameState; onContinue: () => void }) {
+  const [peek, setPeek] = useState(false)
+  const r = game.round!
+  const last = r.last!
+  const reachedTarget = r.score + 1e-9 >= r.target
+  const effects = game.cards.filter((c) => c.flash.length || c.log)
+  const total = game.payout.reduce((p, l) => p + l.amount, 0)
+  if (peek)
+    return (
+      <button className="peek-back" onClick={() => setPeek(false)}>
+        Back to results
+      </button>
+    )
+  return (
+    <Modal title="Round Clear!">
+      <h2>Round {game.roundNo} cleared</h2>
+      <p className="why">
+        {reachedTarget ? (
+          <>
+            Your score <b>{fmt(r.score)}</b> reached the target of <b>{r.target}</b>.
+          </>
+        ) : (
+          <>You uncovered every safe tile.</>
+        )}
+      </p>
+      <h3>Winning move</h3>
+      <table className="stats">
+        <tbody>
+          <tr><td>Tiles uncovered</td><td>{last.revealed}</td></tr>
+          <tr><td>Chips × multiplier</td><td>{Math.round(last.points * 10) / 10} × {last.mult.toFixed(2)}</td></tr>
+          <tr><td>Total scored</td><td>+{fmt(last.gain)}</td></tr>
+          <tr><td>Streak</td><td>{r.streak}</td></tr>
+        </tbody>
+      </table>
+      <h3>What triggered</h3>
+      {last.events.length === 0 && effects.length === 0 ? (
+        <p className="muted">No bonus cells, items or card effects.</p>
+      ) : (
+        <ul className="triggers">
+          {last.events.map((e, i) => (
+            <li key={`e${i}`}>
+              <Rich text={e} size={16} />
+            </li>
+          ))}
+          {effects.map((c) => (
+            <li key={c.uid}>
+              <Icon file={CARD_ICON[c.id]} size={16} px={false} />
+              <span>
+                <b>{CARDS[c.id].name}</b>: <Rich text={[...c.flash, c.log].filter(Boolean).join(' · ')} size={16} />
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <h3>Payout</h3>
+      <table className="stats">
+        <tbody>
+          {game.payout.map((l, i) => (
+            <tr key={i}>
+              <td>{l.label}</td>
+              <td>+${l.amount}</td>
+            </tr>
+          ))}
+          <tr className="total"><td>Total</td><td>${total}</td></tr>
+        </tbody>
+      </table>
+      <div className="modal-actions">
+        <button className="btn" onClick={() => setPeek(true)}>
+          Look at board
+        </button>
+        <button className="btn primary" onClick={onContinue}>
+          Go to shop →
+        </button>
+      </div>
+    </Modal>
   )
 }
 
@@ -273,7 +391,7 @@ function EndOverlay({ game }: { game: GameState }) {
     )
   return (
     <Modal title={won ? 'You Win!' : 'Game Over'}>
-      <h2>{won ? '🏆 You cleared all 12 rounds!' : '💀 Run over'}</h2>
+      <h2>{won ? 'You cleared all 12 rounds!' : 'Run over'}</h2>
       <p className="muted">
         {won ? 'Every mine, outplayed.' : `You fell in round ${game.roundNo}.`} Seed <code>{game.seed}</code>
       </p>
@@ -305,7 +423,7 @@ function EndOverlay({ game }: { game: GameState }) {
 
 // ───────────────────────── round view ─────────────────────────
 
-export function RoundView({ game }: { game: GameState }) {
+export function RoundView({ game, onContinue }: { game: GameState; onContinue?: () => void }) {
   const [mode, setMode] = useState<'dig' | 'flag'>('dig')
   const r = game.round!
   const spec = roundSpec(game.roundNo)
@@ -316,17 +434,22 @@ export function RoundView({ game }: { game: GameState }) {
       <ScoreBar game={game} />
       <Win title={`Minesweeper - Round ${game.roundNo}`} className="board-wrap">
         <div className="board-meta layer-ui">
-          <span>
+          <span {...infoTip('Board size', `${spec.cols} columns × ${spec.rows} rows.`)}>
             {spec.cols}×{spec.rows}
           </span>
-          <span>💣 {flagsLeft}</span>
+          <span
+            className="mines-left"
+            {...infoTip('Mines left', `${mineCount(spec)} mines in total, minus the flags you placed and the mines you already hit.`)}
+          >
+            <Icon file={UI_ICON.mine} size={14} px={false} /> {flagsLeft}
+          </span>
           {!r.board.generated && <span className="hint">tap any tile to start</span>}
         </div>
         <Board game={game} mode={mode} />
       </Win>
       <Tray game={game} mode={mode} setMode={setMode} />
       {(game.phase === 'lost' || game.phase === 'won') && <EndOverlay game={game} />}
+      {game.phase === 'shop' && onContinue && <RoundClear game={game} onContinue={onContinue} />}
     </div>
   )
 }
-

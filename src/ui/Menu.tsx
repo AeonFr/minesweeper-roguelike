@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { continueRun, newRun, readSave } from '../store'
 import { updateSettings, useSettings } from '../settings'
 import { Help } from './Help'
+import { Icon } from './Icon'
+import { UI_ICON } from './icons'
 import { Win } from './Modal'
 
 export function Menu() {
@@ -12,7 +14,9 @@ export function Menu() {
   return (
     <div className="screen menu-screen">
       <Win title="Mine Rogue" className="menu-hero layer-ui">
-        <div className="logo">💣</div>
+        <div className="logo">
+          <Icon file={UI_ICON.logo} size={64} />
+        </div>
         <h1>Mine Rogue</h1>
         <p>Minesweeper meets roguelike. Twelve rounds. Three hearts. Bonus cards, wild multipliers, and one very bad idea per tile.</p>
         <div className="menu-actions">
@@ -37,11 +41,11 @@ export function Menu() {
         <div className="menu-toggles">
           <div>
             <input id="m-music" type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} />
-            <label htmlFor="m-music">🎵 Music</label>
+            <label htmlFor="m-music"><Icon file={UI_ICON.music} size={16} /> Music</label>
           </div>
           <div>
             <input id="m-sfx" type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} />
-            <label htmlFor="m-sfx">🔊 Sounds</label>
+            <label htmlFor="m-sfx"><Icon file={UI_ICON.sound} size={16} /> Sounds</label>
           </div>
           <button className="link" onClick={() => setHelp((h) => !h)}>
             {help ? 'Hide' : 'How to play'}
