@@ -48,7 +48,6 @@ html[data-hide~='fx'] .layer-fx { display: none !important; }
 html[data-hide~='fx'] * { animation: none !important; transition: none !important; }
 html[data-hide~='bg'] .layer-bg { display: none !important; }
 html[data-hide~='bonus'] .bonus-art { display: none !important; }
-html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shadow: var(--tile-raised); }
 
 /* ───────── shell ───────── */
 .app { position: fixed; inset: 0; display: flex; justify-content: center; align-items: center; background: var(--desktop); overflow: hidden; }
@@ -133,20 +132,10 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
 .n1 .face { color: #0000ff; } .n2 .face { color: #008000; } .n3 .face { color: #ff0000; } .n4 .face { color: #000080; }
 .n5 .face { color: #800000; } .n6 .face { color: #008080; } .n7 .face { color: #000; } .n8 .face { color: #808080; }
 
-/* bonus cells: colourful, each with its own animation, but still bevelled like the rest */
+/* bonus cells: after uncovering they look like any tile, plus a small icon (tooltip explains it) */
 .bonus-art { animation: none; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: calc(var(--cell) * .6); pointer-events: none; filter: drop-shadow(0 1px 1px #0008); }
 .tile.claimed .bonus-art { inset: auto; right: 0; top: -1px; }
-.tile.claimed .face { animation: none; }
-.tile.claimed .face { background: linear-gradient(145deg, var(--b1), var(--b2)); box-shadow: inset 2px 2px rgba(255,255,255,.85), inset -2px -2px rgba(0,0,0,.5), 0 0 calc(var(--cell) * .25) var(--b2); }
-.mini-bonus { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; background: linear-gradient(145deg, var(--b1), var(--b2)); box-shadow: inset 2px 2px rgba(255,255,255,.85), inset -2px -2px rgba(0,0,0,.5); flex: none; }
-.bonus-coin { --b1: #fde68a; --b2: #d97706; }
-.bonus-star { --b1: #fef9c3; --b2: #f59e0b; }
-.bonus-spark { --b1: #f5d0fe; --b2: #a21caf; }
-.bonus-flame { --b1: #fdba74; --b2: #dc2626; }
-.bonus-crystal { --b1: #ddd6fe; --b2: #5b21b6; }
-.bonus-gift { --b1: #fecaca; --b2: #15803d; }
-.bonus-shield { --b1: #cffafe; --b2: #0e7490; }
-.bonus-heart { --b1: #fbcfe8; --b2: #be185d; }
+.mini-bonus { display: inline-flex; width: 28px; height: 28px; align-items: center; justify-content: center; background: var(--face); box-shadow: var(--raised); flex: none; }
 @keyframes floaty { 50% { transform: translateY(-12%); } }
 
 /* ───────── cards (portrait 5:7) and items (square 1:1) ───────── */

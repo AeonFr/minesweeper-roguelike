@@ -21,7 +21,7 @@ export function Help() {
       <ul className="bonus-list">
         {(Object.keys(BONUS_INFO) as BonusKind[]).map((k) => (
           <li key={k}>
-            <span className={`mini-bonus bonus-${k}`}>
+            <span className="mini-bonus">
               <Icon file={BONUS_ICON[k]} size={20} px={false} />
             </span>
             <span>

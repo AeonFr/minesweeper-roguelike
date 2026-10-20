@@ -228,7 +228,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
               face = <Icon file={UI_ICON.mine} size={art} px={false} />
             } else {
               face = t.n || ''
-              if (t.bonus) cls.push('claimed', `bonus-${t.bonus}`)
+              if (t.bonus) cls.push('claimed')
             }
           } else {
             cls.push('hidden')
