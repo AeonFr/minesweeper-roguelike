@@ -73,18 +73,6 @@ export function multBreakdown(s: GameState): MultBreakdown {
   return { start: 1, cards: r2(cards), cardMul, bonus: r2(bonus), step: r2(step), streak, streakPart, base, total: r2(base + streakPart) }
 }
 
-function tilePoints(s: GameState, n: number): number {
-  let p = n
-  for (const c of s.cards) {
-    const b = CARDS[c.id].tileBonus?.(n, c, s) ?? 0
-    if (b) {
-      p += b
-      c.score += b
-    }
-  }
-  return p
-}
-
 // ───────────────────────── creation ─────────────────────────
 
 function newCard(s: GameState, id: string): CardInst {
@@ -226,7 +214,7 @@ function revealFree(s: GameState, rng: Rng, idx: number, events: string[]): numb
   const newly = flood(r.board, idx)
   if (!newly.length) return 0
   let p = 0
-  for (const i of newly) p += tilePoints(s, r.board.tiles[i].n)
+  for (const i of newly) p += r.board.tiles[i].n
   r.score = r2(r.score + p * multBreakdown(s).total)
   claimBonuses(s, rng, newly, events)
   return newly.length
@@ -357,15 +345,21 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
   let points = 0
   let maxN = 0
   let count4 = 0
+  let count1 = 0
+  let count2 = 0
+  let sum3 = 0
   for (const i of newly) {
     const n = b.tiles[i].n
-    points += tilePoints(s, n)
+    points += n
     maxN = Math.max(maxN, n)
     if (n >= 4) count4++
+    if (n === 1) count1++
+    if (n === 2) count2++
+    if (n >= 3) sum3 += n
   }
   const mult = multBreakdown(s).total
   const no = r.moves + 1
-  const info: MoveInfo = { no, points, revealed: newly.length, streak: r.streak + 1, mult, maxN, count4 }
+  const info: MoveInfo = { no, points, revealed: newly.length, streak: r.streak + 1, mult, maxN, count4, count1, count2, sum3 }
   let factor = 1
   for (const c of s.cards) {
     const f = CARDS[c.id].moveScoreMult?.(info, c, s) ?? 1
@@ -446,7 +440,7 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
   const b = r.board
   const events: string[] = []
   const hiddenSafe = () => b.tiles.map((_, i) => i).filter((i) => !b.tiles[i].mine && !b.tiles[i].revealed && !b.tiles[i].flagged)
-  const needBoard = !b.generated && ['sprout', 'scope', 'sniffer', 'flashlight'].includes(id)
+  const needBoard = !b.generated && ['sprout', 'scope', 'sniffer', 'flashlight', 'dowse', 'shovel'].includes(id)
   if (needBoard) return 'Uncover a tile first'
   switch (id) {
     case 'sprout': {
@@ -493,6 +487,12 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
     }
     case 'ward':
       r.shield++
+      break
+    case 'dowse':
+      if (!flagRandomMines(s, rng, 3)) return 'No hidden mines to flag'
+      break
+    case 'shovel':
+      if (!revealRandomSafe(s, rng, 3, events)) return 'Nothing left to uncover'
       break
     case 'kindle':
       r.streak += 10

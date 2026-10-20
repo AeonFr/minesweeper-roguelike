@@ -155,7 +155,7 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
 
 /* ───────── cards (portrait 5:7) and items (square 1:1) ───────── */
 .slots { display: grid; gap: 6px; }
-.slots.cards { grid-template-columns: repeat(5, 1fr); }
+.slots.cards { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .slots.lower { grid-template-columns: repeat(2, calc((100% - 24px) / 5)) 1fr; align-items: start; }
 .slots.lower .mode-toggle { grid-column: 3; height: 100%; }
 
@@ -173,7 +173,7 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
 .card.empty, .item.empty { background: transparent; box-shadow: none; border: 1px dashed #004040; color: #004040; cursor: default; }
 .card-emoji { font-size: clamp(22px, 7vw, 32px); line-height: 1; flex: 1; display: flex; align-items: center; }
 .item .card-emoji { flex: none; }
-.card-name { font-size: 12px; font-weight: bold; text-align: center; line-height: 1.05; padding: 0 1px; }
+.card-name { font-size: 12px; font-weight: bold; text-align: center; line-height: 1.05; padding: 0 1px; max-width: 100%; hyphens: auto; overflow-wrap: anywhere; }
 .big .card-emoji { font-size: clamp(30px, 10vw, 46px); }
 .big .card-name { font-size: clamp(12px, 3vw, 13px); }
 .chips { position: absolute; top: -8px; right: -5px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; z-index: 2; pointer-events: none; }

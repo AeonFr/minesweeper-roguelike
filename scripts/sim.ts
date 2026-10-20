@@ -3,8 +3,9 @@
  *   npm run sim -- curve [n]            per-round stats with no items
  *   npm run sim -- run [n]              full runs with a greedy shopping bot
  *   npm run sim -- cards [round] [n]    each card alone vs baseline, in one round
+ *   npm run sim -- loadouts [k] [n]     random k-card loadouts (shop odds) per round: how little of the board is enough?
  */
-import { CARD_LIST } from '../src/engine'
+import { CARD_LIST, hashSeed, makeRng, rarityWeights, type Rarity } from '../src/engine'
 import { isolatedRound, playRun, type RoundResult } from './bot'
 
 const [mode = 'curve', a1, a2] = process.argv.slice(2)
@@ -69,6 +70,35 @@ if (mode === 'curve') {
   for (const { c, s } of rows) {
     console.log(
       `${(c.emoji + ' ' + c.name).padEnd(22)}${c.rarity.padEnd(10)} $${String(c.price).padStart(2)} | ${pct(s.win)} ${((s.win - base.win) * 100).toFixed(0).padStart(5)}  ${pct(s.completion)}  ${((s.completion - base.completion) * 100).toFixed(0).padStart(5)}  ${(s.payout - base.payout).toFixed(2).padStart(5)}`,
+    )
+  }
+}
+
+if (mode === 'loadouts') {
+  const k = Number(a1 ?? 4)
+  const n = Number(a2 ?? 300)
+  console.log(`random ${k}-card loadouts, n=${n} per round`)
+  console.log('round | win%  cleared@win(mean)  p10   p50   <40%cleared  mean score/target')
+  for (const round of [2, 4, 6, 8, 10, 12]) {
+    const w = rarityWeights(round + 1)
+    const rs: RoundResult[] = []
+    for (let i = 0; i < n; i++) {
+      const rng = makeRng(hashSeed(`lo-${round}-${i}`))
+      const pool = CARD_LIST.slice()
+      const picks: string[] = []
+      while (picks.length < k) {
+        const c = rng.weighted(pool, (d) => w[d.rarity as Rarity] || 0.0001)
+        pool.splice(pool.indexOf(c), 1)
+        picks.push(c.id)
+      }
+      rs.push(isolatedRound(`lo-${round}-${i}`, round, picks))
+    }
+    const wins = rs.filter((r) => r.won)
+    const comp = wins.map((r) => r.completion).sort((a, b) => a - b)
+    const q = (p: number) => comp[Math.floor(p * (comp.length - 1))] ?? 0
+    const low = wins.filter((r) => r.completion < 0.4).length / rs.length
+    console.log(
+      `${String(round).padStart(5)} | ${pct(wins.length / rs.length)}  ${pct(avg(comp))}              ${pct(q(0.1))}  ${pct(q(0.5))}  ${pct(low)}        ${avg(wins.map((r) => r.scoreRatio)).toFixed(2)}`,
     )
   }
 }

@@ -36,6 +36,16 @@ export const CARD_ICON: Record<string, string> = {
   heartbeat: 'infrared',
   omniscience: 'file_eye',
   'black-hole': 'processor',
+  'dowsing-rod': 'mouse_location',
+  pickaxe: 'c_clamp',
+  bloodhound: 'search_directory',
+  spade: 'directory_open_file_mydocs',
+  scavenger: 'recycle_bin_directory',
+  radar: 'scanner',
+  excavator: 'defragment',
+  aftershock: 'scandisk',
+  cartographer: 'globe_map',
+  satellite: 'search_web',
 }
 
 export const ITEM_ICON: Record<string, string> = {
@@ -47,6 +57,8 @@ export const ITEM_ICON: Record<string, string> = {
   flashlight: 'tip',
   ward: 'file_padlock',
   kindle: 'msg_warning_inv',
+  dowse: 'mouse_snap',
+  shovel: 'nail',
 }
 
 export const BONUS_ICON: Record<BonusKind, string> = {

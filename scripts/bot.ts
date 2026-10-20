@@ -108,7 +108,7 @@ export function roundCommand(s: GameState, stats: BotStats): Command {
   if (safe.size) return { type: 'reveal', index: safe.values().next().value as number }
   for (let slot = 0; slot < s.consumables.length; slot++) {
     const id = s.consumables[slot]
-    if (id === 'sprout' || id === 'scope' || id === 'flashlight') {
+    if (id === 'sprout' || id === 'scope' || id === 'flashlight' || id === 'shovel' || id === 'dowse') {
       const probe = JSON.parse(JSON.stringify({ ...s, history: [] })) as GameState
       if (applyInPlace(probe, { type: 'useConsumable', slot }, false)) return { type: 'useConsumable', slot }
     }

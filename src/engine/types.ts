@@ -131,6 +131,10 @@ export interface MoveInfo {
   maxN: number
   /** how many uncovered tiles are numbered 4 or higher */
   count4: number
+  count1: number
+  count2: number
+  /** sum of the numbers on uncovered tiles numbered 3 or higher */
+  sum3: number
 }
 
 export interface HookCtx {
@@ -161,8 +165,6 @@ export interface CardDef {
   baseMul?: number
   /** added to the per-streak multiplier step (0.05) */
   streakStep?: (c: CardInst, s: GameState) => number
-  /** extra chips for a revealed tile with number n */
-  tileBonus?: (n: number, c: CardInst, s: GameState) => number
   /** multiplies the score of the move */
   moveScoreMult?: (m: MoveInfo, c: CardInst, s: GameState) => number
   maxHearts?: number

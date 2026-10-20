@@ -8,6 +8,8 @@ const defs: ConsumableDef[] = [
   { id: 'surge', name: 'Surge', emoji: '⚡', price: 4, desc: 'Adds x0.25 to your base multiplier for this round.' },
   { id: 'flashlight', name: 'Flashlight', emoji: '🔦', price: 3, desc: 'Uncover a random hidden safe tile.' },
   { id: 'ward', name: 'Ward', emoji: '🛡️', price: 4, desc: 'The next mine you hit this round is harmless.' },
+  { id: 'dowse', name: 'Divining Rod', emoji: '🔱', price: 4, desc: 'Flag 3 random hidden mines.' },
+  { id: 'shovel', name: 'Shovel', emoji: '🪏', price: 5, desc: 'Uncover 3 random hidden safe tiles.' },
   { id: 'kindle', name: 'Kindle', emoji: '🕯️', price: 5, desc: 'Adds 10 to your streak.' },
 ]
 
