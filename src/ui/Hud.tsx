@@ -13,8 +13,8 @@ export function Hud({ game }: { game: GameState }) {
   const danger = game.phase === 'round' && game.hearts <= 1
   return (
     <header className={`hud layer-ui ${danger ? 'danger' : ''}`}>
-      <button className="icon-btn" aria-label="Menu" onClick={() => setOpen(true)}>
-        <Icon file={UI_ICON.settings} size={16} />
+      <button className="menu-btn" onClick={() => setOpen(true)}>
+        Settings
       </button>
       <div
         className="pill round"

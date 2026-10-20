@@ -11,7 +11,7 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const game = useGame()
   const [help, setHelp] = useState(false)
   return (
-    <Modal title="Options" onClose={onClose}>
+    <Modal title="Settings" onClose={onClose}>
       <div className="toggle-row">
         <input id="opt-music" type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} />
         <label htmlFor="opt-music"><Icon file={UI_ICON.music} size={16} /> Music</label>

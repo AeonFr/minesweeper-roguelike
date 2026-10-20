@@ -76,7 +76,6 @@ export const UI_ICON = {
   mine: 'game_mine_1',
   flag: 'flag.svg',
   heart: 'heart.svg',
-  settings: 'settings_gear',
   help: 'help_question_mark',
   music: 'loudspeaker_rays',
   sound: 'loudspeaker_wave',
