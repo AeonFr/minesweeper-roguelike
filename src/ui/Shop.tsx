@@ -2,6 +2,7 @@ import { CARD_SLOTS, CARDS, CONSUMABLES, CONSUMABLE_SLOTS, mineCount, rerollCost
 import { dispatch } from '../store'
 import { CardView, ConsumableView, EmptySlot } from './Cards'
 import { Hud } from './Hud'
+import { Win } from './Modal'
 
 export function Shop({ game }: { game: GameState }) {
   const shop = game.shop!
@@ -15,8 +16,7 @@ export function Shop({ game }: { game: GameState }) {
     <div className="screen shop-screen">
       <Hud game={game} />
       <div className="shop-scroll">
-        <section className="panel payout layer-ui">
-          <h2>Round {game.roundNo} cleared!</h2>
+        <Win title={`Round ${game.roundNo} cleared!`} className="panel payout layer-ui">
           <table>
             <tbody>
               {game.payout.map((l, i) => (
@@ -31,9 +31,9 @@ export function Shop({ game }: { game: GameState }) {
               </tr>
             </tbody>
           </table>
-        </section>
+        </Win>
 
-        <section className="panel layer-ui">
+        <Win title="Shop.exe" className="panel layer-ui">
           <h3>Bonus cards</h3>
           <div className="offers">
             {shop.cards.map((o, k) =>
@@ -50,9 +50,7 @@ export function Shop({ game }: { game: GameState }) {
                 </div>
               ) : (
                 <div className="offer" key={`sold-${k}`}>
-                  <div className="card big empty">
-                    <span>sold</span>
-                  </div>
+                  <EmptySlot label="sold" big />
                   <button className="btn buy ghost" disabled>
                     &nbsp;
                   </button>
@@ -76,9 +74,7 @@ export function Shop({ game }: { game: GameState }) {
                 </div>
               ) : (
                 <div className="offer" key={`sold-${k}`}>
-                  <div className="card big empty">
-                    <span>sold</span>
-                  </div>
+                  <EmptySlot label="sold" kind="item" big />
                   <button className="btn buy ghost" disabled>
                     &nbsp;
                   </button>
@@ -95,9 +91,9 @@ export function Shop({ game }: { game: GameState }) {
               </button>
             </div>
           </div>
-        </section>
+        </Win>
 
-        <section className="panel layer-ui">
+        <Win title="Inventory" className="panel layer-ui">
           <h3>Your items</h3>
           <div className="slots cards">
             {Array.from({ length: CARD_SLOTS }, (_, k) => {
@@ -131,7 +127,7 @@ export function Shop({ game }: { game: GameState }) {
                 </div>
               ) : (
                 <div className="slot-with-btn" key={k}>
-                  <EmptySlot label="item" />
+                  <EmptySlot label="item" kind="item" />
                   <button className="btn small ghost" disabled>
                     &nbsp;
                   </button>
@@ -139,7 +135,7 @@ export function Shop({ game }: { game: GameState }) {
               )
             })}
           </div>
-        </section>
+        </Win>
       </div>
       <div className="next-bar layer-ui">
         <div className="next-info">

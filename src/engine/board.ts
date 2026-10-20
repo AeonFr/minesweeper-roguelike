@@ -48,9 +48,6 @@ const BONUS_WEIGHTS: [BonusKind, number][] = [
   ['heart', 3],
 ]
 
-/** Chance that a bonus cell is a lure sitting on a mine. */
-export const LURE_CHANCE = 0.12
-
 /**
  * Places mines (never on the first click or its neighbours, so the first move
  * always opens an empty area), computes numbers, then places bonus cells.
@@ -72,13 +69,11 @@ export function generate(board: Board, firstIdx: number, bonusCount: number, rng
   board.totalPoints = total
   board.generated = true
 
-  const lures = rng.shuffle(mineIdx)
   const safe = rng.shuffle(tiles.map((_, i) => i).filter((i) => !tiles[i].mine && i !== firstIdx))
   const numbered = safe.filter((i) => tiles[i].n > 0)
   const pool = numbered.length >= bonusCount ? numbered : safe
   for (let k = 0; k < bonusCount; k++) {
-    const lure = rng.chance(LURE_CHANCE) && lures.length > 0
-    const idx = lure ? lures.pop()! : pool.pop()
+    const idx = pool.pop()
     if (idx === undefined) break
     tiles[idx].bonus = rng.weighted(BONUS_WEIGHTS, (b) => b[1])[0]
   }

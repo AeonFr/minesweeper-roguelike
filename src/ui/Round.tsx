@@ -4,7 +4,7 @@ import { dispatch, newRun, quitToMenu } from '../store'
 import { tipProps } from '../tip'
 import { CardView, ConsumableView, EmptySlot } from './Cards'
 import { Hud } from './Hud'
-import { Modal } from './Modal'
+import { Modal, Win } from './Modal'
 
 const fmt = (n: number) => (Math.round(n * 10) / 10).toFixed(1)
 
@@ -243,7 +243,7 @@ function Tray({ game, mode, setMode }: { game: GameState; mode: 'dig' | 'flag'; 
             </div>
           ) : (
             <div key={k} className="slot-with-btn">
-              <EmptySlot label="item" />
+              <EmptySlot label="item" kind="item" />
               <button className="btn small ghost" disabled>
                 &nbsp;
               </button>
@@ -272,7 +272,7 @@ function EndOverlay({ game }: { game: GameState }) {
       </button>
     )
   return (
-    <Modal>
+    <Modal title={won ? 'You Win!' : 'Game Over'}>
       <h2>{won ? '🏆 You cleared all 12 rounds!' : '💀 Run over'}</h2>
       <p className="muted">
         {won ? 'Every mine, outplayed.' : `You fell in round ${game.roundNo}.`} Seed <code>{game.seed}</code>
@@ -314,7 +314,7 @@ export function RoundView({ game }: { game: GameState }) {
     <div className="screen round-screen">
       <Hud game={game} />
       <ScoreBar game={game} />
-      <div className="board-wrap">
+      <Win title={`Minesweeper - Round ${game.roundNo}`} className="board-wrap">
         <div className="board-meta layer-ui">
           <span>
             {spec.cols}×{spec.rows}
@@ -323,7 +323,7 @@ export function RoundView({ game }: { game: GameState }) {
           {!r.board.generated && <span className="hint">tap any tile to start</span>}
         </div>
         <Board game={game} mode={mode} />
-      </div>
+      </Win>
       <Tray game={game} mode={mode} setMode={setMode} />
       {(game.phase === 'lost' || game.phase === 'won') && <EndOverlay game={game} />}
     </div>

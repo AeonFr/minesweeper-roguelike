@@ -11,6 +11,7 @@
     "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
+    "98.css": "^0.1.21",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

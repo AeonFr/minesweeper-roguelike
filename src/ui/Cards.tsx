@@ -45,6 +45,7 @@ export function CardView({ id, card, game, sell, big }: { id: string; card?: Car
   const flash = card?.flash.filter((f) => !chips.some((c) => c.text === f)).slice(0, 1) ?? []
   return (
     <div className={`card r-${def.rarity} ${big ? 'big' : ''}`} {...tipProps(() => <CardTip id={id} card={card} game={game} sell={sell} />)}>
+      <div className="card-head" />
       <div className="card-emoji">{def.emoji}</div>
       <div className="card-name">{def.name}</div>
       <div className="chips">
@@ -67,14 +68,14 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
   const def = CONSUMABLES[id]
   return (
     <div
-      className={`card cons ${big ? 'big' : ''}`}
+      className={`item ${big ? 'big' : ''}`}
       {...tipProps(() => (
         <>
           <div className="tip-title">
             <span>
               {def.emoji} {def.name}
             </span>
-            <span className="rarity r-consumable">Consumable</span>
+            <span className="rarity r-consumable">Item</span>
           </div>
           <p>{def.desc}</p>
           {sell && <p className="tip-status">Sells for ${sellPrice(def.price)}</p>}
@@ -87,8 +88,9 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
   )
 }
 
-export const EmptySlot = ({ label }: { label: string }) => (
-  <div className="card empty">
+/** Cards are always portrait (5:7); consumable items are always square. */
+export const EmptySlot = ({ label, kind = 'card', big }: { label: string; kind?: 'card' | 'item'; big?: boolean }) => (
+  <div className={`${kind} empty ${big ? 'big' : ''}`}>
     <span>{label}</span>
   </div>
 )

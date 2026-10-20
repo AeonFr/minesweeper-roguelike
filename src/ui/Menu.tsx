@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { continueRun, newRun, readSave } from '../store'
 import { updateSettings, useSettings } from '../settings'
 import { Help } from './Help'
+import { Win } from './Modal'
 
 export function Menu() {
   const settings = useSettings()
@@ -10,7 +11,7 @@ export function Menu() {
   const save = readSave()
   return (
     <div className="screen menu-screen">
-      <div className="menu-hero layer-ui">
+      <Win title="Mine Rogue" className="menu-hero layer-ui">
         <div className="logo">💣</div>
         <h1>Mine Rogue</h1>
         <p>Minesweeper meets roguelike. Twelve rounds. Three hearts. Bonus cards, wild multipliers, and one very bad idea per tile.</p>
@@ -34,18 +35,20 @@ export function Menu() {
           />
         </div>
         <div className="menu-toggles">
-          <label>
-            <input type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} /> 🎵 Music
-          </label>
-          <label>
-            <input type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} /> 🔊 Sounds
-          </label>
+          <div>
+            <input id="m-music" type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} />
+            <label htmlFor="m-music">🎵 Music</label>
+          </div>
+          <div>
+            <input id="m-sfx" type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} />
+            <label htmlFor="m-sfx">🔊 Sounds</label>
+          </div>
           <button className="link" onClick={() => setHelp((h) => !h)}>
             {help ? 'Hide' : 'How to play'}
           </button>
         </div>
         {help && <Help />}
-      </div>
+      </Win>
     </div>
   )
 }

@@ -9,16 +9,15 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const game = useGame()
   const [help, setHelp] = useState(false)
   return (
-    <Modal onClose={onClose}>
-      <h2>Menu</h2>
-      <label className="toggle-row">
-        <span>🎵 Music</span>
-        <input type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} />
-      </label>
-      <label className="toggle-row">
-        <span>🔊 Sound effects</span>
-        <input type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} />
-      </label>
+    <Modal title="Options" onClose={onClose}>
+      <div className="toggle-row">
+        <input id="opt-music" type="checkbox" checked={settings.music} onChange={(e) => updateSettings({ music: e.target.checked })} />
+        <label htmlFor="opt-music">🎵 Music</label>
+      </div>
+      <div className="toggle-row">
+        <input id="opt-sfx" type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} />
+        <label htmlFor="opt-sfx">🔊 Sound effects</label>
+      </div>
       {game && (
         <p className="muted">
           Seed: <code>{game.seed}</code> · {game.history.length} actions

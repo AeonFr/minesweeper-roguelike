@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 import type { Command } from './engine'
 import { dispatch, dispatchAll, installDebugApi, LAYERS, newRun, setLayers, type Layer } from './store'
 import { App } from './ui/App'
+import '98.css'
 import './styles.css'
 
 installDebugApi()

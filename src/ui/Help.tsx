@@ -15,7 +15,7 @@ export function Help() {
         <li>The first tap of a round is always safe.</li>
       </ul>
       <h3>Bonus cells</h3>
-      <p className="muted">Shiny tiles appear after your first move. Mostly they sit on safe ground… mostly.</p>
+      <p className="muted">Shiny tiles appear after your first move. They always sit on safe ground, so uncover them for free perks.</p>
       <ul className="bonus-list">
         {(Object.keys(BONUS_INFO) as BonusKind[]).map((k) => (
           <li key={k}>
