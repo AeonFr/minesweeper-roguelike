@@ -12,7 +12,7 @@ export function Help() {
           all placed to uncover the rest around it.
         </li>
         <li>Every number is worth that many chips. Chips × multiplier = score. Reach the target (the total of the whole board) to win the round.</li>
-        <li>Each consecutive safe move adds +0.05 to the multiplier. A mine resets it and costs a heart. No hearts, run over.</li>
+        <li>Each consecutive safe move adds +0.04 to the multiplier. A mine resets it and costs a heart. No hearts, run over.</li>
         <li>Survive 12 rounds. Between rounds, spend money on bonus cards (5 slots) and consumables (2 slots).</li>
         <li>The first tap of a round is always safe.</li>
       </ul>

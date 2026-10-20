@@ -70,7 +70,7 @@ const defs: CardDef[] = [
   },
   {
     id: 'hot-streak', name: 'Hot Streak', emoji: '🔥', rarity: 'uncommon', price: 6,
-    desc: 'Each consecutive successful move adds x0.07 instead of x0.05.',
+    desc: 'Each consecutive successful move adds x0.06 instead of x0.04.',
     streakStep: () => 0.02,
   },
   {
@@ -184,7 +184,7 @@ const defs: CardDef[] = [
   },
   {
     id: 'metronome', name: 'Metronome', emoji: '🎼', rarity: 'epic', price: 13,
-    desc: 'While your streak is 15 or more, each move adds x0.08 instead of x0.05.',
+    desc: 'While your streak is 15 or more, each move adds x0.07 instead of x0.04.',
     streakStep: (_c, s) => (s.round && s.round.streak >= 15 ? 0.03 : 0),
   },
   {

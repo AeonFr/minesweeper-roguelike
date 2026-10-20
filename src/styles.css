@@ -224,18 +224,19 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
 @keyframes toast { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
 
 /* ───────── shop ───────── */
-.shop-scroll { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 2px; overscroll-behavior: contain; }
+.shop-scroll { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 2px; overscroll-behavior: contain; }
+.shop-side { display: flex; flex-direction: column; gap: 6px; }
 .panel { flex: none; }
-.panel h3 { margin: 2px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
-.panel h3:not(:first-child) { margin-top: 12px; }
+.shop-screen .window-body { padding: 5px 6px; }
+.offers { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; align-items: start; }
+.offer { display: flex; flex-direction: column; gap: 4px; }
+.offers-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.offers-foot .muted { line-height: 1.25; }
+.reroll { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; flex: none; }
 .payout table { width: 100%; border-collapse: collapse; }
-.payout td { padding: 2px 0; } .payout td:last-child { text-align: right; font-weight: bold; color: var(--green); font-variant-numeric: tabular-nums; }
-.payout .total td { border-top: 1px solid var(--lo); font-weight: bold; color: #000; padding-top: 5px; }
-.offers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: start; }
-.offer { display: flex; flex-direction: column; gap: 6px; }
-.reroll { aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 26px; background: var(--face); border: 0; box-shadow: var(--raised); }
-.reroll:active:not(:disabled) { box-shadow: var(--sunken); } .reroll:disabled { filter: grayscale(1); opacity: .6; }
-.reroll small { font-size: 12px; font-weight: bold; }
+.payout td { padding: 1px 0; } .payout td:last-child { text-align: right; font-weight: bold; color: var(--green); font-variant-numeric: tabular-nums; }
+.payout .total td { border-top: 1px solid var(--lo); font-weight: bold; color: #000; padding-top: 3px; }
+.inventory .items-row { margin-top: 6px; }
 .next-bar { flex: none; display: flex; align-items: center; gap: 10px; padding: 6px; background: var(--face); box-shadow: var(--raised); }
 .next-info { flex: 1; display: flex; flex-direction: column; } .next-info b { font-size: 13px; }
 
@@ -260,7 +261,20 @@ html[data-hide~='bonus'] .tile.claimed .face { background: var(--face); box-shad
   .round-screen .scorebar { grid-area: score; }
   .round-screen .board-wrap { grid-area: board; }
   .round-screen .tray { grid-area: tray; align-self: start; }
-  .shop-screen { max-width: 680px; }
+  /* shop: two columns so everything fits without scrolling */
+  .shop-screen { max-width: 1240px; height: auto; max-height: 100%; display: grid; gap: 12px 22px; padding: 18px 22px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; grid-template-areas: 'hud hud' 'main side' 'next side'; align-content: center; }
+  .shop-screen .hud { grid-area: hud; }
+  .shop-scroll { display: contents; }
+  .shop-main { grid-area: main; align-self: start; }
+  .shop-side { grid-area: side; align-self: start; }
+  .next-bar { grid-area: next; align-self: start; }
+  .shop-screen .offers .card .icon, .shop-screen .inventory .card .icon { width: 64px; height: 64px; }
+  .shop-screen .offers .item .icon, .shop-screen .inventory .item .icon { width: 56px; height: 56px; }
+  .shop-screen .offers, .shop-screen .slots { gap: 10px; }
+  .shop-screen .card-name { font-size: 13px; }
+  .shop-screen .btn.small { padding: 6px 4px; font-size: 13px; }
+  .shop-screen .window-body { padding: 8px 10px; }
+  .shop-screen .next-bar { padding: 10px; }
   .card-emoji { font-size: 30px; } .big .card-emoji { font-size: 44px; } .card-name { font-size: 12px; } .big .card-name { font-size: 12px; }
 }
 @media (max-height: 640px) and (max-width: 899px) {

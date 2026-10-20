@@ -163,7 +163,7 @@ export interface CardDef {
   baseMult?: (c: CardInst, s: GameState) => number
   /** multiplies (1 + additive base) */
   baseMul?: number
-  /** added to the per-streak multiplier step (0.05) */
+  /** added to the per-streak multiplier step (0.04) */
   streakStep?: (c: CardInst, s: GameState) => number
   /** multiplies the score of the move */
   moveScoreMult?: (m: MoveInfo, c: CardInst, s: GameState) => number
