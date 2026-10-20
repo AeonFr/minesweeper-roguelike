@@ -38,6 +38,9 @@ code { background: #fff; box-shadow: var(--sunken); padding: 0 4px; }
 .muted { color: #404040; }
 h1, h2, h3, p { margin: 0; }
 
+/* 98.css pins these to 11px, which is hard to read in the pixel font: 12px is the minimum anywhere. */
+.title-bar, .window, button, input, label, legend, li[role='tab'], option, select, table, textarea, ul.tree-view { font-size: 12px; }
+
 /* ───────── layers (for focused screenshots) ───────── */
 html[data-hide~='ui'] .layer-ui { visibility: hidden !important; }
 html[data-hide~='board'] .layer-board { visibility: hidden !important; }
@@ -93,7 +96,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .progress span { position: relative; display: block; text-align: center; font-weight: bold; line-height: 16px; mix-blend-mode: difference; color: #fff; font-variant-numeric: tabular-nums; }
 .calc { display: flex; align-items: center; gap: 6px; height: 48px; }
 .chipbox { width: 76px; height: 46px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; background: #000; box-shadow: var(--sunken); }
-.chipbox small { font-size: 9px; letter-spacing: .12em; font-weight: bold; color: #aaa; }
+.chipbox small { font-size: 12px; letter-spacing: .12em; font-weight: bold; color: #aaa; }
 .chipbox b { font-family: 'Courier New', monospace; font-size: 22px; line-height: 1; color: #ff2020; text-shadow: 0 0 4px #f00a; }
 .chipsbox b { color: #40a0ff; text-shadow: 0 0 4px #40a0ffaa; }
 .times { font-size: 18px; font-weight: bold; }
@@ -169,11 +172,11 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .card.empty, .item.empty { background: transparent; box-shadow: none; border: 1px dashed #004040; color: #004040; cursor: default; }
 .card-emoji { font-size: clamp(22px, 7vw, 32px); line-height: 1; flex: 1; display: flex; align-items: center; }
 .item .card-emoji { flex: none; }
-.card-name { font-size: clamp(9px, 2.4vw, 11px); font-weight: bold; text-align: center; line-height: 1.05; padding: 0 1px; }
+.card-name { font-size: 12px; font-weight: bold; text-align: center; line-height: 1.05; padding: 0 1px; }
 .big .card-emoji { font-size: clamp(30px, 10vw, 46px); }
-.big .card-name { font-size: clamp(10px, 2.8vw, 12px); }
+.big .card-name { font-size: clamp(12px, 3vw, 13px); }
 .chips { position: absolute; top: -8px; right: -5px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; z-index: 2; pointer-events: none; }
-.chip { font-size: 10px; font-weight: bold; padding: 1px 4px; color: #fff; border: 1px solid #000; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chip { font-size: 12px; font-weight: bold; padding: 1px 4px; color: #fff; border: 1px solid #000; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .chip-mult { background: #c00000; } .chip-money { background: #007000; } .chip-score { background: #0000c0; }
 .chip-flash { background: var(--tip); color: #000; animation: eventIn .3s ease-out; }
 .slot-with-btn { display: flex; flex-direction: column; gap: 4px; align-items: stretch; }
@@ -184,13 +187,13 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .mode-toggle.flag { background: #ff9090; }
 .mode-icon { font-size: 22px; line-height: 1.1; }
 .mode-text { font-weight: bold; }
-.mode-toggle small { font-size: 10px; color: #404040; }
+.mode-toggle small { font-size: 12px; color: #404040; }
 
 /* ───────── buttons / modal ───────── */
 .btn { min-width: 0; padding: 7px 12px; font-weight: bold; background: var(--face); border: 0; box-shadow: var(--raised); }
 .btn:active:not(:disabled) { box-shadow: var(--sunken); padding: 8px 11px 6px 13px; }
 .btn:disabled { color: #808080; text-shadow: 1px 1px #fff; }
-.btn.small { padding: 4px 2px; font-size: 11px; }
+.btn.small { padding: 4px 2px; font-size: 12px; }
 .btn.ghost { visibility: hidden; }
 .btn.primary { box-shadow: 0 0 0 1px #000, var(--raised); }
 .btn.big { padding: 11px 20px; font-size: 15px; }
@@ -212,7 +215,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .tip p { margin-top: 4px; }
 .tip-title { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; }
 .tip-status { color: #800000; }
-.rarity { font-size: 9px; text-transform: uppercase; letter-spacing: .08em; padding: 1px 5px; color: #fff; background: var(--common); }
+.rarity { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; padding: 1px 5px; color: #fff; background: var(--common); }
 .r-uncommon.rarity { background: var(--uncommon); } .r-rare.rarity { background: var(--rare); } .r-epic.rarity { background: var(--epic); }
 .r-legendary.rarity { background: var(--legendary); } .r-consumable.rarity { background: var(--desktop); }
 .mult-table { width: 100%; margin-top: 6px; border-collapse: collapse; } .mult-table td:last-child { text-align: right; font-weight: bold; font-variant-numeric: tabular-nums; }
@@ -231,7 +234,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .offer { display: flex; flex-direction: column; gap: 6px; }
 .reroll { aspect-ratio: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 26px; background: var(--face); border: 0; box-shadow: var(--raised); }
 .reroll:active:not(:disabled) { box-shadow: var(--sunken); } .reroll:disabled { filter: grayscale(1); opacity: .6; }
-.reroll small { font-size: 11px; font-weight: bold; }
+.reroll small { font-size: 12px; font-weight: bold; }
 .next-bar { flex: none; display: flex; align-items: center; gap: 10px; padding: 6px; background: var(--face); box-shadow: var(--raised); }
 .next-info { flex: 1; display: flex; flex-direction: column; } .next-info b { font-size: 13px; }
 
@@ -247,7 +250,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
 .menu-toggles { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center; }
 
 .debug { position: fixed; z-index: 200; left: 6px; bottom: 6px; background: #000c; color: #fff; font: 11px/1.5 ui-monospace, monospace; padding: 6px 8px; max-width: 260px; }
-.debug label { margin-right: 6px; color: #fff; } .debug button, .debug select { font-size: 11px; margin: 2px 3px 0 0; }
+.debug label { margin-right: 6px; color: #fff; } .debug button, .debug select { font-size: 12px; margin: 2px 3px 0 0; }
 
 /* ───────── desktop ───────── */
 @media (min-width: 900px) and (min-height: 560px) {
@@ -257,7 +260,7 @@ html[data-hide~='bonus'] .tile.has-bonus .face { background: var(--face); box-sh
   .round-screen .board-wrap { grid-area: board; }
   .round-screen .tray { grid-area: tray; align-self: start; }
   .shop-screen { max-width: 680px; }
-  .card-emoji { font-size: 30px; } .big .card-emoji { font-size: 44px; } .card-name { font-size: 11px; } .big .card-name { font-size: 12px; }
+  .card-emoji { font-size: 30px; } .big .card-emoji { font-size: 44px; } .card-name { font-size: 12px; } .big .card-name { font-size: 12px; }
 }
 @media (max-height: 640px) and (max-width: 899px) {
   .events { display: none; } .mode-toggle { min-height: 48px; } .mode-toggle small { display: none; }
