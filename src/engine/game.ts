@@ -259,10 +259,10 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]
       break
     case 'flame':
       r.streak += 4
-      events.push({ text: '🔥 +4 streak', detail: 'Mouse Speed: your streak went up by 4, which raises your multiplier.' })
+      events.push({ text: '🔥 +4 streak', detail: 'Double-Click: your streak went up by 4, which raises your multiplier.' })
       break
     case 'crystal':
-      if (revealRandomSafe(s, rng, 1, events)) events.push({ text: '🔮 tile revealed', detail: 'Web Search: a random hidden safe tile was uncovered for free.' })
+      if (revealRandomSafe(s, rng, 1, events)) events.push({ text: '🔮 tile revealed', detail: 'Setup Wizard: a random hidden safe tile was uncovered for free.' })
       break
     case 'gift':
       if (s.consumables.length < CONSUMABLE_SLOTS) {
