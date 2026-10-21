@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import type { Command } from './engine'
+import { setCatalogUnlocked } from './catalog'
 import { dispatch, dispatchAll, installDebugApi, LAYERS, newRun, setLayers, type Layer } from './store'
 import { App } from './ui/App'
 import '98.css'
@@ -16,11 +17,13 @@ installDebugApi()
  *   ?cmds=<base64 JSON>  replay commands after setup
  *   ?hide=ui,fx          hide layers: ui, board, fx, bg, bonus
  *   ?debug               show debug panel
+ *   ?unlock              unlock the whole catalog (also: click the menu logo 7 times)
  */
 function bootFromUrl() {
   const q = new URLSearchParams(location.search)
   const hide = (q.get('hide') ?? '').split(',').filter((l): l is Layer => (LAYERS as readonly string[]).includes(l))
   setLayers(hide)
+  if (q.has('unlock')) setCatalogUnlocked(q.get('unlock') !== '0')
   const seed = q.get('seed')
   const scripted = seed || q.has('scene') || q.has('round') || q.has('cmds') || q.has('cards')
   if (!scripted) return

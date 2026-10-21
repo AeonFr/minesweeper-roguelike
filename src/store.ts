@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import * as engine from './engine'
 import { apply, newState, replay, type Command, type GameState } from './engine'
+import { discoverFrom, setCatalogUnlocked, toggleCatalogUnlocked } from './catalog'
 
 const SAVE_KEY = 'mine-rogue.save.v1'
 
@@ -16,6 +17,7 @@ export const subscribe = (cb: () => void) => {
 export const useGame = () => useSyncExternalStore(subscribe, getState)
 
 function persist() {
+  if (state) discoverFrom(state)
   try {
     if (!state || state.phase === 'lost' || state.phase === 'won') localStorage.removeItem(SAVE_KEY)
     else localStorage.setItem(SAVE_KEY, JSON.stringify(state))
@@ -89,6 +91,7 @@ export function continueRun(): boolean {
   const s = readSave()
   if (!s) return false
   state = s
+  discoverFrom(s)
   emit()
   return true
 }
@@ -145,6 +148,9 @@ export function installDebugApi() {
     newRun,
     rewindTo,
     setLayers,
+    /** catalog developer switch: unlockCatalog() / unlockCatalog(false) */
+    unlockCatalog: (on = true) => setCatalogUnlocked(on),
+    toggleCatalog: toggleCatalogUnlocked,
     /** Board as text, for quick inspection in tests and screenshots */
     dump: () => {
       const b = state?.round?.board

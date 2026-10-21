@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { toggleCatalogUnlocked } from '../catalog'
 import { continueRun, newRun, readSave } from '../store'
 import { updateSettings, useSettings } from '../settings'
+import { Catalog } from './Catalog'
 import { Help } from './Help'
 import { Icon } from './Icon'
 import { UI_ICON } from './icons'
@@ -10,11 +12,22 @@ export function Menu() {
   const settings = useSettings()
   const [seed, setSeed] = useState('')
   const [help, setHelp] = useState(false)
+  const [catalog, setCatalog] = useState(false)
+  // Secret: seven quick clicks on the logo toggle "everything discovered" in the catalog (development aid).
+  const taps = useRef<number[]>([])
+  const logoTap = () => {
+    const now = Date.now()
+    taps.current = [...taps.current.filter((t) => now - t < 2500), now]
+    if (taps.current.length >= 7) {
+      taps.current = []
+      toggleCatalogUnlocked()
+    }
+  }
   const save = readSave()
   return (
     <div className="screen menu-screen">
       <Win title="Mine Rogue" className="menu-hero layer-ui">
-        <div className="logo">
+        <div className="logo" onClick={logoTap}>
           <Icon file={UI_ICON.logo} size={64} />
         </div>
         <h1>Mine Rogue</h1>
@@ -47,11 +60,15 @@ export function Menu() {
             <input id="m-sfx" type="checkbox" checked={settings.sfx} onChange={(e) => updateSettings({ sfx: e.target.checked })} />
             <label htmlFor="m-sfx"><Icon file={UI_ICON.sound} size={16} /> Sounds</label>
           </div>
+          <button className="link" onClick={() => setCatalog(true)}>
+            Catalog
+          </button>
           <button className="link" onClick={() => setHelp((h) => !h)}>
             {help ? 'Hide' : 'How to play'}
           </button>
         </div>
         {help && <Help />}
+        {catalog && <Catalog onClose={() => setCatalog(false)} />}
       </Win>
     </div>
   )

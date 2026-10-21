@@ -210,8 +210,10 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
 .next-info { flex: 1; display: flex; flex-direction: column; } .next-info b { font-size: 13px; }
 
 /* ───────── menu ───────── */
-.menu-screen { justify-content: center; align-items: center; overflow-y: auto; }
-.menu-hero { width: min(380px, 100%); text-align: center; }
+.menu-screen { overflow-y: auto; overscroll-behavior: contain; }
+/* auto margins centre it while it fits, and let it scroll from the top once it doesn't (justify-content would clip the top) */
+.menu-hero { width: min(380px, 100%); margin: auto; flex: none; text-align: center; }
+.menu-hero .help { text-align: left; }
 .menu-hero > .window-body { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px; }
 .logo { font-size: 64px; }
 .menu-hero h1 { font-size: 30px; }
@@ -287,3 +289,14 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
   .modal h2 { font-size: 16px; }
   .debug { font-size: 12px; }
 }
+
+/* ───────── catalog ───────── */
+.modal:has(.catalog) { width: min(640px, 100%); }
+.catalog { display: flex; flex-direction: column; gap: 8px; }
+.cat-tabs { display: flex; gap: 2px; }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 12px 8px; padding: 8px 4px; background: #008080; box-shadow: var(--sunken); max-height: 52vh; overflow-y: auto; }
+.cat-grid .card, .cat-grid .item { width: 100%; }
+.locked { filter: grayscale(1); }
+.locked-mark { font-size: 28px; font-weight: bold; color: #808080; justify-content: center; }
+.dev-note { color: var(--red); }
+.logo { cursor: default; }

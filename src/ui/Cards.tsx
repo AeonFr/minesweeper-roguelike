@@ -11,10 +11,10 @@ const RARITY_LABEL: Record<Rarity, string> = {
   legendary: 'Legendary',
 }
 
-function CardTip({ id, card, game, sell }: { id: string; card?: CardInst; game: GameState; sell?: boolean }) {
+export function CardTip({ id, card, game, sell }: { id: string; card?: CardInst; game?: GameState; sell?: boolean }) {
   const def = CARDS[id]
   const lines: string[] = []
-  if (card) {
+  if (card && game) {
     const m = cardBaseMult(card, game)
     if (m > 0) lines.push(`Multiplier from this card: +${m.toFixed(2)}x`)
     if (card.money > 0) lines.push(`Earned this round: $${card.money}`)
