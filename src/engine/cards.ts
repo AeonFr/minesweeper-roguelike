@@ -126,7 +126,7 @@ const defs: CardDef[] = [
     maxLives: 1,
   },
   {
-    id: 'crown', name: 'Employee of the Month', emoji: '👑', rarity: 'rare', price: 12,
+    id: 'crown', name: 'Users and Roles', emoji: '👑', rarity: 'rare', price: 12,
     desc: 'Adds x0.2 to your base multiplier.',
     baseMult: () => 0.2,
   },

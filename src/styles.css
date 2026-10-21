@@ -131,7 +131,7 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
 
 .card, .item {
   position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-  background: var(--face); box-shadow: var(--raised); touch-action: manipulation; padding: 0 2px 3px;
+  background: var(--face); box-shadow: var(--raised); touch-action: manipulation; padding: 0 2px 6px;
 }
 .card { aspect-ratio: 5 / 7; --rc: var(--common); }
 .item { aspect-ratio: 1 / 1; padding-top: 3px; }
