@@ -33,8 +33,8 @@ export function roundSpec(round: number): RoundSpec {
 
 export const mineCount = (spec: RoundSpec) => Math.round(spec.cols * spec.rows * spec.density)
 
-/** Base payout for clearing a round. */
-export const roundReward = (round: number) => 1 + Math.ceil(round / 4)
+/** Base payout for clearing a round. The first four rounds pay $1 extra, so one slip doesn't leave nothing to spend. */
+export const roundReward = (round: number) => 1 + Math.ceil(round / 4) + (round <= 4 ? 1 : 0)
 
 export const sellPrice = (price: number) => Math.max(1, Math.floor(price / 2))
 
