@@ -226,7 +226,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'black-hole', name: 'Black Hole', emoji: '🕳️', rarity: 'legendary', price: 26,
+    id: 'black-hole', name: 'Disk Partition', emoji: '🕳️', rarity: 'legendary', price: 26,
     desc: 'Moves that uncover 12 or more tiles score double.',
     moveScoreMult: (m) => (m.revealed >= 12 ? 2 : 1),
   },
