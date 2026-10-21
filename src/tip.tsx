@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useGame } from './store'
 
 interface TipState {
@@ -89,9 +90,11 @@ export function TipLayer() {
   }, [cur, game])
 
   if (!cur || !document.contains(cur.anchor)) return null
-  return (
+  // Portalled to <body>, like modals: .app is its own stacking context, so inside it a tip would sit under any modal.
+  return createPortal(
     <div ref={ref} className="tip layer-ui" style={{ left: pos.left, top: pos.top, opacity: pos.ready ? 1 : 0 }}>
       {cur.render()}
-    </div>
+    </div>,
+    document.body,
   )
 }
