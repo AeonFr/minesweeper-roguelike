@@ -77,7 +77,7 @@ export function multBreakdown(s: GameState): MultBreakdown {
 // ───────────────────────── creation ─────────────────────────
 
 function newCard(s: GameState, id: string): CardInst {
-  return { uid: s.nextUid++, id, counter: 0, mult: 0, money: 0, score: 0, flash: [], log: '' }
+  return { uid: s.nextUid++, id, counter: 0, mult: 0, money: 0, score: 0, flash: [], flashInfo: [], log: '' }
 }
 
 export function newState(seed: string): GameState {
@@ -131,12 +131,19 @@ function startRound(s: GameState, rng: Rng) {
     c.money = 0
     c.score = 0
     c.flash = []
+    c.flashInfo = []
     c.log = ''
   }
   for (const c of s.cards) CARDS[c.id].onRoundStart?.(ctx(s, rng, c, null, false, []))
 }
 
 // ───────────────────────── hook context ─────────────────────────
+
+/** Records what a card just did: a short chip label plus the full sentence for its tooltip. */
+function note(card: CardInst, short: string, info: string) {
+  card.flash.push(short)
+  card.flashInfo.push(info)
+}
 
 function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, collect: boolean, events: GameEvent[]): HookCtx {
   const def = CARDS[card.id]
@@ -149,32 +156,32 @@ function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, coll
     addMoney(n) {
       s.money += n
       card.money += n
-      card.flash.push(`+$${n}`)
+      note(card, `+$${n}`, `Earned $${n}.`)
       if (collect) s.payout.push({ label, amount: n })
     },
     addMult(n) {
       card.mult = r2(card.mult + n)
-      card.flash.push(`+${n}x mult`)
+      note(card, `+${n}x`, `Added +${n} to your base multiplier for the rest of this round.`)
     },
     addScore(n) {
       s.round!.score = r2(s.round!.score + n)
       card.score += n
-      card.flash.push(`+${n} pts`)
+      note(card, `+${n} pts`, `Added ${n} point${n === 1 ? '' : 's'} straight to your score (not multiplied).`)
     },
     revealSafe(n) {
       const got = revealRandomSafe(s, rng, n, events)
-      if (got) card.flash.push(`uncovered ${got} tile${got > 1 ? 's' : ''}`)
+      if (got) note(card, `${got} tile${got > 1 ? 's' : ''}`, `Uncovered ${got} random hidden safe tile${got > 1 ? 's' : ''}.`)
       return got
     },
     flagMines(n) {
       const got = flagRandomMines(s, rng, n)
-      if (got) card.flash.push(`flagged ${got} mine${got > 1 ? 's' : ''}`)
+      if (got) note(card, `${got} flag${got > 1 ? 's' : ''}`, `Flagged ${got} random hidden mine${got > 1 ? 's' : ''}.`)
       return got
     },
     heal(n) {
       const before = s.hearts
       s.hearts = Math.min(maxHearts(s), s.hearts + n)
-      if (s.hearts > before) card.flash.push('+1 heart')
+      if (s.hearts > before) note(card, '+1 heart', 'Restored 1 heart.')
     },
     keepStreak() {
       s.round!.streakSafe = true
@@ -297,7 +304,10 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
     generate(b, valid[0], roundSpec(s.roundNo).bonusCells, rng)
     r.target = b.totalPoints
   }
-  for (const c of s.cards) c.flash = []
+  for (const c of s.cards) {
+    c.flash = []
+    c.flashInfo = []
+  }
   const before = r.score
   const events: GameEvent[] = []
   const mines = valid.filter((i) => b.tiles[i].mine)
@@ -366,7 +376,7 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
     const f = CARDS[c.id].moveScoreMult?.(info, c, s) ?? 1
     if (f !== 1) {
       factor *= f
-      c.flash.push(`x${f}`)
+      note(c, `x${f}`, `This move scored x${f}.`)
     }
   }
   r.score = r2(r.score + points * mult * factor)

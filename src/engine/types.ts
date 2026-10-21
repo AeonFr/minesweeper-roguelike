@@ -71,6 +71,8 @@ export interface CardInst {
   score: number
   /** short texts for the last move, cleared before every move */
   flash: string[]
+  /** full-sentence versions of `flash`, same order, for tooltips */
+  flashInfo: string[]
   log: string
 }
 

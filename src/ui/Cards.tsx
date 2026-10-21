@@ -19,8 +19,10 @@ function CardTip({ id, card, game, sell }: { id: string; card?: CardInst; game: 
     if (m > 0) lines.push(`Multiplier from this card: +${m.toFixed(2)}x`)
     if (card.money > 0) lines.push(`Earned this round: $${card.money}`)
     if (card.score > 0) lines.push(`Points added this round: ${Math.round(card.score * 100) / 100}`)
-    if (card.flash.length) lines.push(`Last move: ${card.flash.join(' · ')}`)
-    if (card.log) lines.push(card.log)
+    const info = card.flashInfo ?? []
+    if (info.length) lines.push(`Last move: ${info.join(' ')}`)
+    else if (card.flash.length) lines.push(`Last move: ${card.flash.join(' · ')}`)
+    if (card.log && !info.length) lines.push(card.log)
   }
   return (
     <>

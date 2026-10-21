@@ -321,6 +321,6 @@ export function cardChips(c: CardInst, s: Parameters<NonNullable<CardDef['baseMu
   if (m > 0) chips.push({ kind: 'mult', text: `+${m.toFixed(2)}x` })
   if (def.baseMul) chips.push({ kind: 'mult', text: `x${def.baseMul}` })
   if (c.money > 0) chips.push({ kind: 'money', text: `+$${c.money}` })
-  if (c.score > 0) chips.push({ kind: 'score', text: `+${r2(c.score)}` })
+  if (c.score > 0) chips.push({ kind: 'score', text: `+${r2(c.score)} pts` })
   return chips
 }
