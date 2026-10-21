@@ -112,6 +112,7 @@ function startRound(s: GameState, rng: Rng) {
     score: 0,
     target: 0,
     streak: 0,
+    bestStreak: 0,
     bonusMult: 0,
     shield: 0,
     moves: 0,
@@ -371,9 +372,10 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
   r.score = r2(r.score + points * mult * factor)
   r.streak++
   r.moves = no
-  s.stats.bestStreak = Math.max(s.stats.bestStreak, r.streak)
   claimBonuses(s, rng, newly, events)
   for (const c of s.cards) CARDS[c.id].onMove?.(ctx(s, rng, c, info, false, events))
+  r.bestStreak = Math.max(r.bestStreak ?? 0, r.streak)
+  s.stats.bestStreak = Math.max(s.stats.bestStreak, r.streak)
   r.last = { no, points, mult: r2(mult * factor), gain: r2(r.score - before), revealed: newly.length, hit: false, blocked: false, events }
   checkWin(s, rng)
   return true
@@ -500,6 +502,8 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
       break
     case 'kindle':
       r.streak += 10
+      r.bestStreak = Math.max(r.bestStreak ?? 0, r.streak)
+      s.stats.bestStreak = Math.max(s.stats.bestStreak, r.streak)
       break
   }
   s.consumables.splice(slot, 1)

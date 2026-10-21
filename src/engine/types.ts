@@ -48,6 +48,8 @@ export interface RoundState {
   score: number
   target: number
   streak: number
+  /** highest streak reached this round */
+  bestStreak: number
   /** extra multiplier from bonus tiles / consumables, this round only */
   bonusMult: number
   shield: number

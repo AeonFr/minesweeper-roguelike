@@ -264,8 +264,6 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
 .modal h3 { margin: 10px 0 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .modal .why { margin: 2px 0 4px; font-size: 13px; }
 .stats .total td { border-top: 2px solid var(--lo); font-weight: bold; }
-.triggers { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 4px; }
-.triggers li { display: flex; align-items: center; gap: 6px; background: var(--tip); border: 1px solid #000; padding: 3px 6px; }
 .mines-left { display: inline-flex; align-items: center; gap: 3px; }
 
 /* very narrow phones: keep the whole HUD on one line */

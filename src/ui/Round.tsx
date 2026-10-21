@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import {
   BONUS_INFO,
-  CARDS,
   CARD_SLOTS,
   CONSUMABLE_SLOTS,
   mineCount,
@@ -15,7 +14,7 @@ import { infoTip, tipProps } from '../tip'
 import { CardView, ConsumableView, EmptySlot } from './Cards'
 import { Hud } from './Hud'
 import { Icon, Rich } from './Icon'
-import { BONUS_ICON, CARD_ICON, UI_ICON } from './icons'
+import { BONUS_ICON, UI_ICON } from './icons'
 import { Modal, Win } from './Modal'
 
 const fmt = (n: number) => (Math.round(n * 10) / 10).toFixed(1)
@@ -319,9 +318,13 @@ function Tray({ game, mode, setMode }: { game: GameState; mode: 'dig' | 'flag'; 
 function RoundClear({ game, onContinue }: { game: GameState; onContinue: () => void }) {
   const [peek, setPeek] = useState(false)
   const r = game.round!
-  const last = r.last!
+  const b = r.board
   const reachedTarget = r.score + 1e-9 >= r.target
-  const effects = game.cards.filter((c) => c.flash.length || c.log)
+  const safeTotal = b.cols * b.rows - b.mines
+  const safeDone = safeTotal - b.safeLeft
+  const pointsDone = b.tiles.reduce((p, t) => (t.revealed && !t.mine ? p + t.n : p), 0)
+  const bonusTotal = b.tiles.filter((t) => t.bonus).length
+  const bonusFound = b.tiles.filter((t) => t.bonus && t.revealed).length
   const total = game.payout.reduce((p, l) => p + l.amount, 0)
   if (peek)
     return (
@@ -341,40 +344,19 @@ function RoundClear({ game, onContinue }: { game: GameState; onContinue: () => v
           <>You uncovered every safe tile.</>
         )}
       </p>
-      <h3>Winning move</h3>
+      <h3>Round totals</h3>
       <table className="stats">
         <tbody>
-          <tr><td>Tiles uncovered</td><td>{last.revealed}</td></tr>
-          <tr><td>Tile score × multiplier</td><td>{Math.round(last.points * 10) / 10} × {last.mult.toFixed(2)}</td></tr>
-          <tr><td>Total scored</td><td>+{fmt(last.gain)}</td></tr>
-          <tr><td>Streak</td><td>{r.streak}</td></tr>
+          <tr><td>Final score</td><td>{fmt(r.score)} / {r.target}</td></tr>
+          <tr><td>Tiles uncovered</td><td>{safeDone} / {safeTotal} ({Math.round((safeDone / safeTotal) * 100)}%)</td></tr>
+          <tr><td>Tile score collected</td><td>{pointsDone} / {b.totalPoints}</td></tr>
+          <tr><td>Bonus tiles found</td><td>{bonusFound} / {bonusTotal}</td></tr>
+          <tr><td>Moves</td><td>{r.moves}</td></tr>
+          <tr><td>Mines hit</td><td>{r.mistakes}</td></tr>
+          <tr><td>Best streak</td><td>{r.bestStreak ?? r.streak}</td></tr>
+          <tr><td>Final multiplier</td><td>×{multBreakdown(game).total.toFixed(2)}</td></tr>
         </tbody>
       </table>
-      <h3>What triggered</h3>
-      {last.events.length === 0 && effects.length === 0 ? (
-        <p className="muted">No bonus tiles, items or card effects.</p>
-      ) : (
-        <ul className="triggers">
-          {last.events.map((e, i) => (
-            <li key={`e${i}`}>
-              <span>
-                <b>
-                  <Rich text={e.text} size={16} />
-                </b>{' '}
-                {e.detail}
-              </span>
-            </li>
-          ))}
-          {effects.map((c) => (
-            <li key={c.uid}>
-              <Icon file={CARD_ICON[c.id]} size={16} px={false} />
-              <span>
-                <b>{CARDS[c.id].name}</b>: <Rich text={[...c.flash, c.log].filter(Boolean).join(' · ')} size={16} />
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
       <h3>Payout</h3>
       <table className="stats">
         <tbody>
