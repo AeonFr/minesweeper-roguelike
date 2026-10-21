@@ -15,7 +15,7 @@ const defs: CardDef[] = [
     onRoundEnd: (x) => x.addMoney(1),
   },
   {
-    id: 'lucky-clover', name: 'Autocorrect', emoji: '🍀', rarity: 'common', price: 6,
+    id: 'lucky-clover', name: 'Autofill', emoji: '🍀', rarity: 'common', price: 6,
     desc: 'Every 10th successful move, uncover a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 10 === 0 && x.revealSafe(1)) x.say('🍀 uncovered a tile')
@@ -29,7 +29,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'counting-beads', name: 'Counting Beads', emoji: '📿', rarity: 'common', price: 6,
+    id: 'counting-beads', name: 'Ledger', emoji: '📿', rarity: 'common', price: 6,
     desc: 'Every tile numbered 1 you uncover adds +0.5 points (not multiplied).',
     onMove: (x) => {
       if (x.move!.count1 > 0) x.addScore(r2(x.move!.count1 * 0.5))
@@ -82,7 +82,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'gambler', name: 'Solitaire Break', emoji: '🎲', rarity: 'uncommon', price: 7,
+    id: 'gambler', name: 'Office Raffle', emoji: '🎲', rarity: 'uncommon', price: 7,
     desc: 'Every successful move has a 1 in 14 chance to earn $1.',
     onMove: (x) => {
       if (x.rng.chance(1 / 14)) x.addMoney(1)
@@ -121,7 +121,7 @@ const defs: CardDef[] = [
   },
   // ───────── rare ─────────
   {
-    id: 'extra-life', name: 'Extra Life', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
+    id: 'extra-life', name: 'Reboot', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
     desc: 'You have a 4th life. The life is lost if this card is sold.',
     maxLives: 1,
   },
@@ -144,7 +144,7 @@ const defs: CardDef[] = [
     moveScoreMult: (m) => (m.no % 4 === 0 ? 2 : 1),
   },
   {
-    id: 'lucky-seven', name: 'Lucky Seven', emoji: '7️⃣', rarity: 'rare', price: 12,
+    id: 'lucky-seven', name: 'Weekly Sync', emoji: '7️⃣', rarity: 'rare', price: 12,
     desc: 'Every 7th successful move adds x0.15 to the base multiplier (this round).',
     onMove: (x) => {
       if (x.move!.no % 7 === 0) {
@@ -239,7 +239,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'pickaxe', name: 'Binder Clip', emoji: '⛏️', rarity: 'common', price: 6,
+    id: 'pickaxe', name: 'Toolbox', emoji: '⛏️', rarity: 'common', price: 6,
     desc: 'After your first move, uncover 2 random hidden safe tiles.',
     onMove: (x) => {
       if (x.move!.no === 1 && x.revealSafe(2)) x.say('⛏️ dug up tiles')
@@ -253,7 +253,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'spade', name: 'Filing Cabinet', emoji: '🥄', rarity: 'uncommon', price: 7,
+    id: 'spade', name: 'My Documents', emoji: '🥄', rarity: 'uncommon', price: 7,
     desc: 'Moves that uncover 4 or more tiles also uncover 1 random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.revealed >= 4 && x.revealSafe(1)) x.say('🥄 dug a bit deeper')

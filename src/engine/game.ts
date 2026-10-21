@@ -255,7 +255,7 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]
     }
     case 'spark':
       r.bonusMult = r2(r.bonusMult + 0.15)
-      events.push({ text: '✨ +0.15x', detail: 'DirectX: +0.15 added to your base multiplier for the rest of this round.' })
+      events.push({ text: '✨ +0.15x', detail: 'Overclock: +0.15 added to your base multiplier for the rest of this round.' })
       break
     case 'flame':
       r.streak += 4
@@ -268,10 +268,10 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]
       if (s.consumables.length < CONSUMABLE_SLOTS) {
         const c = rng.pick(CONSUMABLE_LIST)
         s.consumables.push(c.id)
-        events.push({ text: `🎁 ${c.emoji} ${c.name}`, detail: `Free Software: you received ${c.name} (${c.desc})` })
+        events.push({ text: `🎁 ${c.emoji} ${c.name}`, detail: `Free Game: you received ${c.name} (${c.desc})` })
       } else {
         s.money += 1
-        events.push({ text: '🎁 +$1', detail: 'Free Software: your item slots were full, so you got $1 instead.' })
+        events.push({ text: '🎁 +$1', detail: 'Free Game: your item slots were full, so you got $1 instead.' })
       }
       break
     case 'shield':

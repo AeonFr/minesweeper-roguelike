@@ -26,7 +26,7 @@ export function Hud({ game }: { game: GameState }) {
         {...tipProps(() => (
           <>
             <div className="tip-title">
-              <span className="tip-name"><Icon file={UI_ICON.money} size={16} px={false} /> Money</span>
+              <span className="tip-name"><Icon file={UI_ICON.money} size={16} /> Money</span>
             </div>
             <p>Spend it in the shop between rounds. You earn more for clearing harder rounds, keeping lives, and playing flawlessly.</p>
           </>

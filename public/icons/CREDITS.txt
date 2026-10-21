@@ -1,3 +1,4 @@
 Windows 95-style icons from https://github.com/AlexBSoft/win95.css/tree/master/assets/icons
 (originally collected at https://alexmeub.com/old-windows-icons/).
+They live in 16/, 32/ and 48/ (real pixel sizes, never scaled): cards use 48, items 32, bonus tiles and small UI 16.
 flag.svg is an original pixel-art drawing made for this project.

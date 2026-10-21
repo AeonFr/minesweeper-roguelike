@@ -49,7 +49,7 @@ export function Catalog({ onClose }: { onClose: () => void }) {
                 <div key={def.id} className={`card r-${def.rarity}`} {...tipProps(() => <CardTip id={def.id} />)}>
                   <div className="card-head" />
                   <div className="card-emoji">
-                    <Icon file={CARD_ICON[def.id]} size={32} />
+                    <Icon file={CARD_ICON[def.id]} size={48} />
                   </div>
                   <div className="card-name">{def.name}</div>
                 </div>
@@ -67,7 +67,7 @@ export function Catalog({ onClose }: { onClose: () => void }) {
                     <>
                       <div className="tip-title">
                         <span className="tip-name">
-                          <Icon file={ITEM_ICON[def.id]} size={16} px={false} /> {CONSUMABLES[def.id].name}
+                          <Icon file={ITEM_ICON[def.id]} size={16} /> {CONSUMABLES[def.id].name}
                         </span>
                         <span className="rarity r-consumable">Item</span>
                       </div>
@@ -94,7 +94,7 @@ export function Catalog({ onClose }: { onClose: () => void }) {
                     <>
                       <div className="tip-title">
                         <span className="tip-name">
-                          <Icon file={BONUS_ICON[k]} size={16} px={false} /> {BONUS_INFO[k].name}
+                          <Icon file={BONUS_ICON[k]} size={16} /> {BONUS_INFO[k].name}
                         </span>
                         <span className="rarity r-consumable">Bonus tile</span>
                       </div>
@@ -103,7 +103,7 @@ export function Catalog({ onClose }: { onClose: () => void }) {
                   ))}
                 >
                   <div className="card-emoji">
-                    <Icon file={BONUS_ICON[k]} size={32} />
+                    <Icon file={BONUS_ICON[k]} size={16} />
                   </div>
                   <div className="card-name">{BONUS_INFO[k].name}</div>
                 </div>

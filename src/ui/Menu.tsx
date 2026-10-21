@@ -28,7 +28,7 @@ export function Menu() {
     <div className="screen menu-screen">
       <Win title="Mine Rogue" className="menu-hero layer-ui">
         <div className="logo" onClick={logoTap}>
-          <Icon file={UI_ICON.logo} size={64} />
+          <Icon file={UI_ICON.logo} size={32} />
         </div>
         <h1>Mine Rogue</h1>
         <p>Minesweeper meets roguelike. Twelve rounds. Three lives. Bonus cards, wild multipliers, and one very bad idea per tile.</p>

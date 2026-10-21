@@ -22,7 +22,7 @@ export function Help() {
         {(Object.keys(BONUS_INFO) as BonusKind[]).map((k) => (
           <li key={k}>
             <span className="mini-bonus">
-              <Icon file={BONUS_ICON[k]} size={20} px={false} />
+              <Icon file={BONUS_ICON[k]} size={16} />
             </span>
             <span>
               <b>{BONUS_INFO[k].name}</b>: {BONUS_INFO[k].desc}

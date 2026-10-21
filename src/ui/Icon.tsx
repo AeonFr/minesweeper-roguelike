@@ -1,11 +1,19 @@
 import { Fragment } from 'react'
+import { ICON_SIZES } from './iconManifest'
 import { EMOJI_ICON } from './icons'
 
-const src = (file: string) => `${import.meta.env.BASE_URL}icons/${file.includes('.') ? file : file + '.png'}`
+export type IconSize = 16 | 32 | 48
 
-/** `px` keeps hard pixel edges (use at 32px+); small sizes scale smoothly. */
-export function Icon({ file, size = 32, px = size >= 32, className = '' }: { file: string; size?: number; px?: boolean; className?: string }) {
-  return <img className={`icon ${px ? 'px' : ''} ${className}`} src={src(file)} width={size} height={size} alt="" draggable={false} />
+/** An icon file exists at exactly this size (icons are never scaled). The flag is a vector and fits anywhere. */
+export const hasIcon = (file: string, size: IconSize) => file.endsWith('.svg') || !!ICON_SIZES[file]?.includes(size)
+
+const src = (file: string, size: IconSize) =>
+  `${import.meta.env.BASE_URL}icons/${file.endsWith('.svg') ? file : `${size}/${file}.png`}`
+
+/** Shows the icon at its real size. If that size doesn't exist for this icon, nothing is drawn. */
+export function Icon({ file, size, className = '' }: { file: string; size: IconSize; className?: string }) {
+  if (!hasIcon(file, size)) return null
+  return <img className={`icon ${className}`} src={src(file, size)} width={size} height={size} alt="" draggable={false} />
 }
 
 const PATTERN = new RegExp(
@@ -15,12 +23,12 @@ const PATTERN = new RegExp(
   'u',
 )
 
-/** Text where engine emoji are swapped for Windows 95 icons. */
-export function Rich({ text, size = 14 }: { text: string; size?: number }) {
+/** Text where engine emoji are swapped for Windows 95 icons (16px), or left as the emoji when there is no 16px icon. */
+export function Rich({ text }: { text: string }) {
   return (
     <>
       {text.split(PATTERN).map((part, i) =>
-        EMOJI_ICON[part] ? <Icon key={i} file={EMOJI_ICON[part]} size={size} px={false} className="inline" /> : <Fragment key={i}>{part}</Fragment>,
+        EMOJI_ICON[part] && hasIcon(EMOJI_ICON[part], 16) ? <Icon key={i} file={EMOJI_ICON[part]} size={16} className="inline" /> : <Fragment key={i}>{part}</Fragment>,
       )}
     </>
   )

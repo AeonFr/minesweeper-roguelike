@@ -28,8 +28,8 @@ button { min-width: 0; cursor: pointer; }
 body { cursor: default; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 input, code { user-select: text; -webkit-user-select: text; }
 [data-tip] { cursor: help; }
-.icon { display: inline-block; vertical-align: middle; flex: none; image-rendering: auto; -webkit-user-drag: none; }
-.icon.px { image-rendering: pixelated; }
+/* icons are always drawn at their real size, so keep the pixels crisp */
+.icon { display: inline-block; vertical-align: middle; flex: none; image-rendering: pixelated; -webkit-user-drag: none; }
 .icon.inline { margin: -2px 2px 0 0; }
 .tip-name { display: inline-flex; align-items: center; gap: 4px; }
 button:disabled { cursor: default; }
@@ -250,8 +250,6 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
   .shop-main { grid-area: main; align-self: start; }
   .shop-side { grid-area: side; align-self: start; }
   .next-bar { grid-area: next; align-self: start; }
-  .shop-screen .offers .card .icon, .shop-screen .inventory .card .icon { width: 64px; height: 64px; }
-  .shop-screen .offers .item .icon, .shop-screen .inventory .item .icon { width: 56px; height: 56px; }
   .shop-screen .offers, .shop-screen .slots { gap: 10px; }
   .shop-screen .card-name { font-size: 13px; }
   .shop-screen .btn.small { padding: 6px 4px; font-size: 13px; }
@@ -276,7 +274,6 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
   .pill.money { min-width: 0; }
   .lives { width: auto; padding: 3px 2px; }
   .life { width: 18px; }
-  .life .icon { width: 16px; height: 16px; }
 }
 
 /* desktop has room: 14px is the minimum there (12px stays the floor on small screens) */

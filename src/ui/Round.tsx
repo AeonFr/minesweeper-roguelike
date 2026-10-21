@@ -89,25 +89,25 @@ function ScoreBar({ game }: { game: GameState }) {
               : 'Your points from the last move show up here.',
           )}
         >
-          {last ? (last.hit ? <Icon file={last.blocked ? UI_ICON.shield : UI_ICON.mine} size={24} px={false} /> : `+${fmt(last.gain)}`) : ''}
+          {last ? (last.hit ? <Icon file={last.blocked ? UI_ICON.shield : UI_ICON.mine} size={32} /> : `+${fmt(last.gain)}`) : ''}
         </div>
         <div
           className="streak"
           {...infoTip('Streak', `${r.streak} safe moves in a row. Each one adds +${mb.step.toFixed(2)} to the multiplier until you hit a mine.`)}
         >
-          <Icon file={UI_ICON.streak} size={16} px={false} />
+          <Icon file={UI_ICON.streak} size={16} />
           <b>{r.streak}</b>
         </div>
         {r.shield > 0 && (
           <div className="shield" {...infoTip('Firewall', `The next ${r.shield > 1 ? r.shield + ' mines you hit are' : 'mine you hit is'} harmless.`)}>
-            <Icon file={UI_ICON.shield} size={16} px={false} />
+            <Icon file={UI_ICON.shield} size={16} />
             {r.shield}
           </div>
         )}
       </div>
       <div className="events">
         {last?.events.slice(0, 3).map((e, i) => (
-          <span key={`${game.stats.moves}-${i}`} className="event" {...infoTip('Triggered by your last move', <Rich text={e.detail} size={16} />)}>
+          <span key={`${game.stats.moves}-${i}`} className="event" {...infoTip('Triggered by your last move', <Rich text={e.detail} />)}>
             <Rich text={e.text} />
           </span>
         ))}
@@ -131,7 +131,8 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
   const pointerType = useRef('mouse')
   const lost = game.phase === 'lost'
   const playing = game.phase === 'round'
-  const art = Math.round(size * 0.68)
+  // icons are never scaled: the 32px mine on roomy tiles, the 16px one otherwise
+  const art: 16 | 32 = size >= 44 ? 32 : 16
 
   useLayoutEffect(() => {
     const el = wrap.current!
@@ -220,7 +221,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
             cls.push('revealed', `n${t.n}`)
             if (t.exploded) {
               cls.push('exploded')
-              face = <Icon file={UI_ICON.mine} size={art} px={false} />
+              face = <Icon file={UI_ICON.mine} size={art} />
             } else {
               face = t.n || ''
               if (t.bonus) cls.push('claimed')
@@ -229,10 +230,10 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
             cls.push('hidden')
             if (t.flagged) {
               cls.push('flagged')
-              face = <Icon file={UI_ICON.flag} size={art} px={false} />
+              face = <Icon file={UI_ICON.flag} size={32} />
             } else if (lost && t.mine) {
               cls.push('mine')
-              face = <Icon file={UI_ICON.mine} size={art} px={false} />
+              face = <Icon file={UI_ICON.mine} size={art} />
             }
           }
           // Bonus tiles stay secret until uncovered; afterwards the tile explains what it did.
@@ -242,7 +243,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
                 <>
                   <div className="tip-title">
                     <span className="tip-name">
-                      <Icon file={BONUS_ICON[bonus]} size={16} px={false} /> {BONUS_INFO[bonus].name}
+                      <Icon file={BONUS_ICON[bonus]} size={16} /> {BONUS_INFO[bonus].name}
                     </span>
                     <span className="rarity r-consumable">Bonus tile</span>
                   </div>
@@ -257,7 +258,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
                 {face}
                 {bonus && (
                   <span className="bonus-art">
-                    <Icon file={BONUS_ICON[bonus]} size={Math.round(size * 0.46)} px={false} />
+                    <Icon file={BONUS_ICON[bonus]} size={16} />
                   </span>
                 )}
               </span>
@@ -301,9 +302,11 @@ function Tray({ game, mode, setMode }: { game: GameState; mode: 'dig' | 'flag'; 
           )
         })}
         <button className={`mode-toggle ${mode}`} onClick={() => setMode(mode === 'dig' ? 'flag' : 'dig')} aria-label="Toggle dig or flag mode">
-          <span className="mode-icon">
-            <Icon file={mode === 'dig' ? UI_ICON.dig : UI_ICON.flag} size={28} />
-          </span>
+          {mode === 'flag' && (
+            <span className="mode-icon">
+              <Icon file={UI_ICON.flag} size={32} />
+            </span>
+          )}
           <span className="mode-text">{mode === 'dig' ? 'Digging' : 'Flagging'}</span>
           <small>hold = {mode === 'dig' ? 'flag' : 'dig'}</small>
         </button>
@@ -445,7 +448,7 @@ export function RoundView({ game, onContinue }: { game: GameState; onContinue?: 
             className="mines-left"
             {...infoTip('Mines left', `${mineCount(spec)} mines in total, minus the flags you placed and the mines you already hit.`)}
           >
-            <Icon file={UI_ICON.mine} size={14} px={false} /> {flagsLeft}
+            <Icon file={UI_ICON.mine} size={16} /> {flagsLeft}
           </span>
           {!r.board.generated && <span className="hint">tap any tile to start</span>}
         </div>

@@ -28,7 +28,7 @@ export function CardTip({ id, card, game, sell }: { id: string; card?: CardInst;
     <>
       <div className="tip-title">
         <span className="tip-name">
-          <Icon file={CARD_ICON[id]} size={16} px={false} /> {def.name}
+          <Icon file={CARD_ICON[id]} size={16} /> {def.name}
         </span>
         <span className={`rarity r-${def.rarity}`}>{RARITY_LABEL[def.rarity]}</span>
       </div>
@@ -51,7 +51,7 @@ export function CardView({ id, card, game, sell, big }: { id: string; card?: Car
     <div className={`card r-${def.rarity} ${big ? 'big' : ''}`} {...tipProps(() => <CardTip id={id} card={card} game={game} sell={sell} />)}>
       <div className="card-head" />
       <div className="card-emoji">
-        <Icon file={CARD_ICON[id]} size={big ? 64 : 32} />
+        <Icon file={CARD_ICON[id]} size={48} />
       </div>
       <div className="card-name">{def.name}</div>
       <div className="chips">
@@ -62,7 +62,7 @@ export function CardView({ id, card, game, sell, big }: { id: string; card?: Car
         ))}
         {flash.map((f, i) => (
           <span key={'f' + i} className="chip chip-flash">
-            <Rich text={f} size={11} />
+            <Rich text={f} />
           </span>
         ))}
       </div>
@@ -79,7 +79,7 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
         <>
           <div className="tip-title">
             <span className="tip-name">
-              <Icon file={ITEM_ICON[id]} size={16} px={false} /> {def.name}
+              <Icon file={ITEM_ICON[id]} size={16} /> {def.name}
             </span>
             <span className="rarity r-consumable">Item</span>
           </div>
@@ -89,7 +89,7 @@ export function ConsumableView({ id, sell, big }: { id: string; sell?: boolean; 
       ))}
     >
       <div className="card-emoji">
-        <Icon file={ITEM_ICON[id]} size={big ? 64 : 32} />
+        <Icon file={ITEM_ICON[id]} size={32} />
       </div>
       <div className="card-name">{def.name}</div>
     </div>
