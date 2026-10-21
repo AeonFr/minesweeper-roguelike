@@ -38,11 +38,11 @@ export function emptyBoard(cols: number, rows: number, mines: number): Board {
 }
 
 const BONUS_WEIGHTS: [BonusKind, number][] = [
-  ['coin', 28],
+  ['coin', 22],
   ['star', 24],
   ['spark', 14],
   ['flame', 12],
-  ['crystal', 10],
+  ['crystal', 4],
   ['gift', 6],
   ['shield', 4],
   ['heart', 3],
@@ -50,7 +50,7 @@ const BONUS_WEIGHTS: [BonusKind, number][] = [
 
 /**
  * Places mines (never on the first click or its neighbours, so the first move
- * always opens an empty area), computes numbers, then places bonus cells.
+ * always opens an empty area), computes numbers, then places bonus tiles.
  */
 export function generate(board: Board, firstIdx: number, bonusCount: number, rng: Rng): void {
   const { cols, rows, tiles } = board

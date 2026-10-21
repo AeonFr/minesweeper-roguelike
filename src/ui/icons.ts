@@ -1,6 +1,6 @@
 import { CARD_LIST, CONSUMABLE_LIST, BONUS_INFO, type BonusKind } from '../engine'
 
-/** Windows 95 icons (public/icons/*.png) for every card, item and bonus cell. See public/icons/CREDITS.txt. */
+/** Windows 95 icons (public/icons/*.png) for every card, item and bonus tile. See public/icons/CREDITS.txt. */
 export const CARD_ICON: Record<string, string> = {
   'steady-hand': 'mouse',
   'pocket-change': 'cd_audio_cd',
@@ -11,7 +11,7 @@ export const CARD_ICON: Record<string, string> = {
   'cautious-cat': 'msagent_file',
   'piggy-bank': 'hard_disk_drive_pie',
   magnifier: 'magnifying_glass',
-  'hot-streak': 'msg_warning',
+  'hot-streak': 'accessibility_stopwatch',
   'tax-collector': 'cylinder_database',
   gambler: 'game_freecell',
   'first-blood': 'msg_error',
@@ -65,7 +65,7 @@ export const BONUS_ICON: Record<BonusKind, string> = {
   coin: 'cd_audio_cd',
   star: 'world_star',
   spark: 'directx',
-  flame: 'msg_warning',
+  flame: 'accessibility_stopwatch',
   crystal: 'connected_world',
   gift: 'package',
   shield: 'file_padlock',
@@ -81,7 +81,7 @@ export const UI_ICON = {
   sound: 'loudspeaker_wave',
   logo: 'minesweeper',
   dig: 'tools_gear',
-  streak: 'msg_warning',
+  streak: 'accessibility_stopwatch',
   shield: 'file_padlock',
   refresh: 'overlay_refresh',
   money: 'cd_audio_cd',

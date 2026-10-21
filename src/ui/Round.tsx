@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import {
   BONUS_INFO,
   CARDS,
@@ -49,8 +49,8 @@ function ScoreBar({ game }: { game: GameState }) {
         <div className="fill" style={{ width: `${pct}%` }} />
       </div>
       <div className="calc">
-        <div className="chipbox chipsbox" {...infoTip('Chips', 'Points from the tiles you uncovered with your last move: each tile is worth its number.')}>
-          <small>CHIPS</small>
+        <div className="chipbox chipsbox" {...infoTip('Tile score', 'Points from the tiles you uncovered with your last move: each tile is worth its number.')}>
+          <small>TILES</small>
           <b>{last ? Math.round(last.points * 10) / 10 : 0}</b>
         </div>
         <span className="times">×</span>
@@ -64,7 +64,7 @@ function ScoreBar({ game }: { game: GameState }) {
                   <tr><td>Base</td><td>×{mb.start.toFixed(2)}</td></tr>
                   {mb.cards !== 0 && <tr><td>Bonus cards</td><td>+{mb.cards.toFixed(2)}</td></tr>}
                   {mb.cardMul !== 1 && <tr><td>Card multiplier</td><td>×{mb.cardMul}</td></tr>}
-                  {mb.bonus !== 0 && <tr><td>Bonus cells &amp; items</td><td>+{mb.bonus.toFixed(2)}</td></tr>}
+                  {mb.bonus !== 0 && <tr><td>Bonus tiles &amp; items</td><td>+{mb.bonus.toFixed(2)}</td></tr>}
                   <tr><td>Base multiplier</td><td>×{mb.base.toFixed(2)}</td></tr>
                   <tr><td>Streak {mb.streak} × {mb.step.toFixed(2)}</td><td>+{mb.streakPart.toFixed(2)}</td></tr>
                 </tbody>
@@ -86,14 +86,14 @@ function ScoreBar({ game }: { game: GameState }) {
                 ? last.blocked
                   ? 'You hit a mine, but a shield absorbed it.'
                   : 'You hit a mine: a heart was lost and your streak was reset.'
-                : `Your last move scored ${fmt(last.gain)} points in total: tiles × multiplier, plus any bonus cells and card effects.`
+                : `Your last move scored ${fmt(last.gain)} points in total: tiles × multiplier, plus any bonus tiles and card effects.`
               : 'Your points from the last move show up here.',
           )}
         >
           {last ? (last.hit ? <Icon file={last.blocked ? UI_ICON.shield : UI_ICON.mine} size={24} px={false} /> : `+${fmt(last.gain)}`) : ''}
         </div>
         <div
-          className={`streak ${r.streak >= 10 ? 'hot' : ''}`}
+          className="streak"
           {...infoTip('Streak', `${r.streak} safe moves in a row. Each one adds +${mb.step.toFixed(2)} to the multiplier until you hit a mine.`)}
         >
           <Icon file={UI_ICON.streak} size={16} px={false} />
@@ -120,12 +120,13 @@ function ScoreBar({ game }: { game: GameState }) {
 // ───────────────────────── board ─────────────────────────
 
 const LONG_PRESS = 380
+/** Same query as the desktop layout in styles.css. */
+const DESKTOP = '(min-width: 900px) and (min-height: 560px)'
 
 function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
   const r = game.round!
   const b = r.board
   const wrap = useRef<HTMLDivElement>(null)
-  const grid = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState(32)
   const press = useRef<{ i: number; timer: number; fired: boolean } | null>(null)
   const pointerType = useRef('mouse')
@@ -136,24 +137,20 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
   useLayoutEffect(() => {
     const el = wrap.current!
     const measure = () => {
-      const w = el.clientWidth - 12
-      const h = el.clientHeight - 12
-      setSize(Math.max(20, Math.floor(Math.min(w / b.cols, h / b.rows, 56))))
+      if (window.matchMedia(DESKTOP).matches) {
+        const w = el.clientWidth - 12
+        const h = el.clientHeight - 12
+        setSize(Math.max(28, Math.floor(Math.min(w / b.cols, h / b.rows, 56))))
+      } else {
+        // Phones: size from the width only; a tall board makes the page scroll instead of shrinking the tiles.
+        setSize(Math.max(28, Math.min(56, Math.floor((el.clientWidth - 6) / b.cols))))
+      }
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(el)
     return () => ro.disconnect()
   }, [b.cols, b.rows])
-
-  useEffect(() => {
-    if (game.stats.mistakes > 0 && r.last?.hit && grid.current) {
-      grid.current.animate(
-        [{ transform: 'translate(0,0)' }, { transform: 'translate(-6px,3px)' }, { transform: 'translate(5px,-3px)' }, { transform: 'translate(-3px,2px)' }, { transform: 'translate(0,0)' }],
-        { duration: 320, easing: 'ease-out' },
-      )
-    }
-  }, [game.stats.mistakes, r.last?.hit])
 
   const indexOf = (target: EventTarget | null) => {
     const el = (target as HTMLElement | null)?.closest<HTMLElement>('[data-i]')
@@ -209,7 +206,6 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
   return (
     <div className="board-area layer-board" ref={wrap}>
       <div
-        ref={grid}
         className="grid"
         style={{ gridTemplateColumns: `repeat(${b.cols}, ${size}px)`, ['--cell' as string]: `${size}px` }}
         onPointerDown={onDown}
@@ -240,7 +236,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
               face = <Icon file={UI_ICON.mine} size={art} px={false} />
             }
           }
-          // Bonus cells stay secret until uncovered; afterwards the tile explains what it did.
+          // Bonus tiles stay secret until uncovered; afterwards the tile explains what it did.
           const bonus = t.revealed && !t.exploded ? t.bonus : null
           const tip = bonus
             ? tipProps(() => (
@@ -249,7 +245,7 @@ function Board({ game, mode }: { game: GameState; mode: 'dig' | 'flag' }) {
                     <span className="tip-name">
                       <Icon file={BONUS_ICON[bonus]} size={16} px={false} /> {BONUS_INFO[bonus].name}
                     </span>
-                    <span className="rarity r-consumable">Bonus cell</span>
+                    <span className="rarity r-consumable">Bonus tile</span>
                   </div>
                   <p>{BONUS_INFO[bonus].desc}</p>
                   <p className="tip-status">Already collected.</p>
@@ -349,14 +345,14 @@ function RoundClear({ game, onContinue }: { game: GameState; onContinue: () => v
       <table className="stats">
         <tbody>
           <tr><td>Tiles uncovered</td><td>{last.revealed}</td></tr>
-          <tr><td>Chips × multiplier</td><td>{Math.round(last.points * 10) / 10} × {last.mult.toFixed(2)}</td></tr>
+          <tr><td>Tile score × multiplier</td><td>{Math.round(last.points * 10) / 10} × {last.mult.toFixed(2)}</td></tr>
           <tr><td>Total scored</td><td>+{fmt(last.gain)}</td></tr>
           <tr><td>Streak</td><td>{r.streak}</td></tr>
         </tbody>
       </table>
       <h3>What triggered</h3>
       {last.events.length === 0 && effects.length === 0 ? (
-        <p className="muted">No bonus cells, items or card effects.</p>
+        <p className="muted">No bonus tiles, items or card effects.</p>
       ) : (
         <ul className="triggers">
           {last.events.map((e, i) => (
@@ -446,13 +442,14 @@ function EndOverlay({ game }: { game: GameState }) {
 export function RoundView({ game, onContinue }: { game: GameState; onContinue?: () => void }) {
   const [mode, setMode] = useState<'dig' | 'flag'>('dig')
   const r = game.round!
+  const danger = game.phase === 'round' && game.hearts <= 1
   const spec = roundSpec(game.roundNo)
   const flagsLeft = mineCount(spec) - r.board.tiles.filter((t) => t.flagged || t.exploded).length
   return (
     <div className="screen round-screen">
       <Hud game={game} />
       <ScoreBar game={game} />
-      <Win title={`Minesweeper - Round ${game.roundNo}`} className="board-wrap">
+      <Win title={`Minesweeper - Round ${game.roundNo}${danger ? ' (LAST HEART)' : ''}`} className={`board-wrap ${danger ? 'danger' : ''}`}>
         <div className="board-meta layer-ui">
           <span {...infoTip('Board size', `${spec.cols} columns × ${spec.rows} rows.`)}>
             {spec.cols}×{spec.rows}

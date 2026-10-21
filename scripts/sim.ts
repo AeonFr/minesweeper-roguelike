@@ -5,7 +5,7 @@
  *   npm run sim -- cards [round] [n]    each card alone vs baseline, in one round
  *   npm run sim -- loadouts [k] [n]     random k-card loadouts (shop odds) per round: how little of the board is enough?
  */
-import { CARD_LIST, hashSeed, makeRng, rarityWeights, type Rarity } from '../src/engine'
+import { CARD_LIST, emptyBoard, generate, hashSeed, makeRng, mineCount, rarityWeights, roundSpec, type Rarity } from '../src/engine'
 import { isolatedRound, playRun, type RoundResult } from './bot'
 
 const [mode = 'curve', a1, a2] = process.argv.slice(2)
@@ -27,8 +27,37 @@ function summarize(rs: RoundResult[]) {
   }
 }
 
+function boardStats(round: number, n: number) {
+  let zero = 0
+  let numbered = 0
+  let safe = 0
+  let all = 0
+  let bonus = 0
+  for (let i = 0; i < n; i++) {
+    const spec = roundSpec(round)
+    const b = emptyBoard(spec.cols, spec.rows, mineCount(spec))
+    const rng = makeRng(hashSeed(`bs-${round}-${i}`))
+    generate(b, Math.floor(b.rows / 2) * b.cols + Math.floor(b.cols / 2), spec.bonusCells, rng)
+    for (const t of b.tiles) {
+      all++
+      if (t.bonus) bonus++
+      if (t.mine) continue
+      safe++
+      if (t.n === 0) zero++
+      else numbered++
+    }
+  }
+  return { empty: zero / safe, numbered: numbered / safe, mines: 1 - safe / all, bonus: bonus / n }
+}
+
 if (mode === 'curve') {
   const n = Number(a1 ?? 300)
+  console.log('round | mines%  empty% of safe  numbered% of safe  bonus tiles')
+  for (let round = 1; round <= 12; round++) {
+    const b = boardStats(round, 200)
+    console.log(`${String(round).padStart(5)} | ${pct(b.mines)}    ${pct(b.empty)}            ${pct(b.numbered)}               ${b.bonus.toFixed(1)}`)
+  }
+  console.log()
   console.log('round | win%  cleared@win  moves guesses mistakes payout')
   for (let round = 1; round <= 12; round++) {
     const rs = Array.from({ length: n }, (_, i) => isolatedRound(`curve-${round}-${i}`, round, []))
@@ -51,11 +80,11 @@ if (mode === 'curve') {
   console.log(`runs: ${n}  won: ${pct(wins / n)}  avg round reached: ${avg(reached).toFixed(2)}`)
   const dist = Array.from({ length: 12 }, (_, i) => reached.filter((x) => x === i + 1).length)
   console.log('died at round:', dist.map((d, i) => `${i + 1}:${d}`).join('  '))
-  console.log('round | played win%  cleared@win  moves  payout')
+  console.log('round | played win%  cleared@win  moves  payout | $ at shop  $ left  cards owned')
   perRound.forEach((rs, i) => {
     if (!rs.length) return
     const s = summarize(rs)
-    console.log(`${String(i + 1).padStart(5)} | ${String(rs.length).padStart(6)} ${pct(s.win)}  ${pct(s.completion)}      ${f(s.moves)} ${f(s.payout)}`)
+    console.log(`${String(i + 1).padStart(5)} | ${String(rs.length).padStart(6)} ${pct(s.win)}  ${pct(s.completion)}      ${f(s.moves)} ${f(s.payout)} | ${f(avg(rs.map((r) => r.shopMoney ?? 0)))} ${f(avg(rs.map((r) => r.moneyLeft ?? 0)))} ${f(avg(rs.map((r) => r.cardsOwned ?? 0)), 2)}`)
   })
 } else if (mode === 'cards') {
   const round = Number(a1 ?? 6)

@@ -150,6 +150,10 @@ export interface RoundResult {
   guesses: number
   payout: number
   scoreRatio: number
+  /** money when the shop opens / after buying, and cards owned after buying (run mode) */
+  shopMoney?: number
+  moneyLeft?: number
+  cardsOwned?: number
 }
 
 export function playRound(s: GameState): RoundResult {
@@ -183,7 +187,10 @@ export function playRun(seed: string): { reached: number; won: boolean; rounds: 
     rounds.push(res)
     if (!res.won) return { reached: res.round, won: false, rounds, state: s }
     if (s.phase === 'won') return { reached: 12, won: true, rounds, state: s }
+    res.shopMoney = s.money
     for (const c of shopCommands(s)) applyInPlace(s, c, false)
+    res.moneyLeft = s.money
+    res.cardsOwned = s.cards.length
     applyInPlace(s, { type: 'nextRound' }, false)
   }
 }

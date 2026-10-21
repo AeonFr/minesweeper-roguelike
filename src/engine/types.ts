@@ -26,10 +26,10 @@ export interface Board {
 
 export interface LastMove {
   no: number
-  /** raw chips from revealed tiles */
+  /** raw tile score from revealed tiles */
   points: number
   mult: number
-  /** everything the move added to the score (tiles, bonus cells, cards) */
+  /** everything the move added to the score (tiles, bonus tiles, cards) */
   gain: number
   revealed: number
   hit: boolean
@@ -42,7 +42,7 @@ export interface RoundState {
   score: number
   target: number
   streak: number
-  /** extra multiplier from bonus cells / consumables, this round only */
+  /** extra multiplier from bonus tiles / consumables, this round only */
   bonusMult: number
   shield: number
   moves: number

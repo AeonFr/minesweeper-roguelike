@@ -12,29 +12,29 @@ export interface RoundSpec {
 }
 
 const DIMS: [number, number, number][] = [
-  [7, 7, 0.12],
-  [8, 8, 0.13],
-  [8, 9, 0.14],
-  [9, 9, 0.15],
-  [9, 10, 0.16],
-  [10, 10, 0.17],
-  [10, 11, 0.185],
-  [10, 12, 0.21],
+  [7, 7, 0.14],
+  [8, 8, 0.15],
+  [8, 9, 0.16],
+  [9, 9, 0.17],
+  [9, 10, 0.18],
+  [10, 10, 0.19],
+  [10, 11, 0.2],
+  [10, 12, 0.215],
   [11, 12, 0.225],
-  [11, 13, 0.245],
-  [12, 14, 0.265],
-  [12, 15, 0.29],
+  [11, 13, 0.25],
+  [12, 14, 0.26],
+  [12, 16, 0.265],
 ]
 
 export function roundSpec(round: number): RoundSpec {
   const [cols, rows, density] = DIMS[Math.min(round, MAX_ROUND) - 1]
-  return { cols, rows, density, bonusCells: 2 + Math.floor(round / 3) }
+  return { cols, rows, density, bonusCells: 1 + Math.floor(round / 4) }
 }
 
 export const mineCount = (spec: RoundSpec) => Math.round(spec.cols * spec.rows * spec.density)
 
 /** Base payout for clearing a round. */
-export const roundReward = (round: number) => 3 + Math.ceil(round / 2)
+export const roundReward = (round: number) => 1 + Math.ceil(round / 4)
 
 export const sellPrice = (price: number) => Math.max(1, Math.floor(price / 2))
 

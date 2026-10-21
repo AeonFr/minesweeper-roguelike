@@ -10,9 +10,8 @@ const HEART_SLOTS = 4
 export function Hud({ game }: { game: GameState }) {
   const [open, setOpen] = useState(false)
   const max = maxHearts(game)
-  const danger = game.phase === 'round' && game.hearts <= 1
   return (
-    <header className={`hud layer-ui ${danger ? 'danger' : ''}`}>
+    <header className={`hud layer-ui`}>
       <button className="menu-btn" onClick={() => setOpen(true)}>
         Settings
       </button>
@@ -54,7 +53,6 @@ export function Hud({ game }: { game: GameState }) {
           </span>
         ))}
       </div>
-      {danger && <div className="danger-banner">⚠ LAST HEART ⚠</div>}
       {open && <SettingsModal onClose={() => setOpen(false)} />}
     </header>
   )

@@ -52,15 +52,13 @@ export function App() {
   const game = useGame()
   useHiddenLayers()
   useAudioSync(game)
-  const danger = !!game && game.phase === 'round' && game.hearts <= 1
   // After the winning move we stay on the board (with a summary) until the player continues to the shop.
   const [seen, setSeen] = useState<string | null>(null)
   const clearKey = game ? `${game.seed}:${game.roundNo}` : ''
   const showResult = !!game && game.phase === 'shop' && !!game.round?.last && seen !== clearKey
   return (
-    <div className={`app ${danger ? 'danger' : ''}`}>
+    <div className="app">
       <div className="bg layer-bg" />
-      <div className="vignette layer-fx" />
       {!game ? <Menu /> : game.phase === 'shop' && !showResult ? <Shop game={game} /> : <RoundView game={game} onContinue={() => setSeen(clearKey)} />}
       <TipLayer />
       <Toast game={game} />

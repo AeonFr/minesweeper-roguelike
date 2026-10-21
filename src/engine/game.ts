@@ -45,7 +45,7 @@ export interface MultBreakdown {
   cards: number
   /** multiplicative contribution from cards (e.g. 1.25) */
   cardMul: number
-  /** bonus cells + consumables this round */
+  /** bonus tiles + consumables this round */
   bonus: number
   /** per-streak step */
   step: number
@@ -86,7 +86,7 @@ export function newState(seed: string): GameState {
     rng: hashSeed(seed),
     phase: 'round',
     roundNo: 1,
-    money: 5,
+    money: 2,
     hearts: BASE_HEARTS,
     cards: [],
     consumables: [],
@@ -234,9 +234,8 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: string[]) {
   const r = s.round!
   switch (kind) {
     case 'coin': {
-      const m = s.roundNo >= 6 ? 2 : 1
-      s.money += m
-      events.push(`🪙 +$${m}`)
+      s.money += 1
+      events.push('🪙 +$1')
       break
     }
     case 'star': {
@@ -275,8 +274,8 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: string[]) {
         s.hearts++
         events.push('❤️ +1 heart')
       } else {
-        s.money += 2
-        events.push('❤️ +$2')
+        s.money += 1
+        events.push('❤️ +$1')
       }
       break
   }
@@ -382,6 +381,8 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
 function checkWin(s: GameState, rng: Rng) {
   const r = s.round!
   if (s.phase !== 'round') return
+  // the target is only known once the board exists: nothing can be won before the first move
+  if (!r.board.generated) return
   if (r.score + 1e-9 >= r.target || r.board.safeLeft === 0) finishRound(s, rng)
 }
 
@@ -389,10 +390,11 @@ function finishRound(s: GameState, rng: Rng) {
   const r = s.round!
   const b = r.board
   const lines: PayoutLine[] = [{ label: `Round ${s.roundNo} cleared`, amount: roundReward(s.roundNo) }]
-  lines.push({ label: `${s.hearts} heart${s.hearts === 1 ? '' : 's'} left`, amount: s.hearts })
+  const heartBonus = Math.floor(s.hearts / 2)
+  if (heartBonus > 0) lines.push({ label: `${s.hearts} hearts left`, amount: heartBonus })
   if (!r.lostHeart) lines.push({ label: 'Flawless: no heart lost', amount: 1 })
   const hidden = b.safeLeft / (b.cols * b.rows - b.mines)
-  const skip = Math.min(2, Math.floor(hidden / 0.15))
+  const skip = Math.min(1, Math.floor(hidden / 0.2))
   if (skip > 0) lines.push({ label: `Left ${Math.round(hidden * 100)}% of the board`, amount: skip })
   for (const l of lines) s.money += l.amount
   s.payout = lines
@@ -424,8 +426,9 @@ function rollShop(s: GameState, rng: Rng, rerolls: number): Shop {
     cards.push({ id: def.id, price: def.price })
   }
   const cons: Offer[] = []
-  for (let k = 0; k < 2; k++) {
-    const def = rng.pick(CONSUMABLE_LIST)
+  const pool = CONSUMABLE_LIST.slice()
+  for (let k = 0; k < 2 && pool.length; k++) {
+    const def = pool.splice(rng.int(pool.length), 1)[0]
     cons.push({ id: def.id, price: def.price })
   }
   return { cards, cons, rerolls }
