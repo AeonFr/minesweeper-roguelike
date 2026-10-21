@@ -19,7 +19,7 @@ export const CARD_ICON: Record<string, string> = {
   lantern: 'standby_monitor_moon',
   compass: 'gps',
   scout: 'search_computer',
-  'extra-heart': 'game_hearts',
+  'extra-life': 'game_hearts',
   crown: 'certificate_seal',
   vault: 'key_padlock',
   'twin-mirror': 'monitor_blue_grad',
@@ -69,13 +69,13 @@ export const BONUS_ICON: Record<BonusKind, string> = {
   crystal: 'connected_world',
   gift: 'package',
   shield: 'file_padlock',
-  heart: 'heart.svg',
+  life: 'utopia_smiley',
 }
 
 export const UI_ICON = {
   mine: 'game_mine_1',
   flag: 'flag.svg',
-  heart: 'heart.svg',
+  life: 'utopia_smiley',
   help: 'help_question_mark',
   music: 'loudspeaker_rays',
   sound: 'loudspeaker_wave',
@@ -94,6 +94,5 @@ export const EMOJI_ICON: Record<string, string> = {}
 for (const c of CARD_LIST) EMOJI_ICON[c.emoji] = CARD_ICON[c.id]
 for (const c of CONSUMABLE_LIST) EMOJI_ICON[c.emoji] = ITEM_ICON[c.id]
 for (const k of Object.keys(BONUS_INFO) as BonusKind[]) EMOJI_ICON[BONUS_INFO[k].emoji] = BONUS_ICON[k]
-EMOJI_ICON['❤️'] = 'heart.svg'
 EMOJI_ICON['🚩'] = 'flag.svg'
 EMOJI_ICON['💥'] = UI_ICON.mine

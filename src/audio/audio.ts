@@ -9,7 +9,7 @@
 import { hashSeed, makeRng, type Rng } from '../engine/rng'
 
 export type Scene = 'menu' | 'round' | 'shop'
-export type Intensity = 0 | 1 | 2 // 0 calm … 2 = last heart
+export type Intensity = 0 | 1 | 2 // 0 calm … 2 = last life
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null

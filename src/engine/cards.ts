@@ -55,9 +55,9 @@ const defs: CardDef[] = [
   },
   {
     id: 'piggy-bank', name: 'Piggy Bank', emoji: '🐷', rarity: 'common', price: 5,
-    desc: 'Earn $1 at the end of a round if you still have 3 or more hearts.',
+    desc: 'Earn $1 at the end of a round if you still have 3 or more lives.',
     onRoundEnd: (x) => {
-      if (x.s.hearts >= 3) x.addMoney(1)
+      if (x.s.lives >= 3) x.addMoney(1)
     },
   },
   // ───────── uncommon ─────────
@@ -121,9 +121,9 @@ const defs: CardDef[] = [
   },
   // ───────── rare ─────────
   {
-    id: 'extra-heart', name: 'Extra Heart', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
-    desc: 'You have a 4th heart. The heart is lost if this card is sold.',
-    maxHearts: 1,
+    id: 'extra-life', name: 'Extra Life', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
+    desc: 'You have a 4th life. The life is lost if this card is sold.',
+    maxLives: 1,
   },
   {
     id: 'crown', name: 'Crown', emoji: '👑', rarity: 'rare', price: 12,
@@ -173,7 +173,7 @@ const defs: CardDef[] = [
   },
   {
     id: 'phoenix', name: 'Phoenix Feather', emoji: '🦅', rarity: 'epic', price: 20,
-    desc: 'When you would lose your last heart, you survive instead. Destroyed on use.',
+    desc: 'When you would lose your last life, you survive instead. Destroyed on use.',
     revive: true,
   },
   {
@@ -213,7 +213,7 @@ const defs: CardDef[] = [
   },
   {
     id: 'heartbeat', name: 'Heartbeat', emoji: '💓', rarity: 'legendary', price: 28,
-    desc: 'Every 25th successful move, heal 1 heart.',
+    desc: 'Every 25th successful move, heal 1 life.',
     onMove: (x) => {
       if (x.move!.no % 25 === 0) x.heal(1)
     },

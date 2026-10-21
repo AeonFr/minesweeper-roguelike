@@ -24,12 +24,39 @@ function persist() {
   }
 }
 
+/** Saves from before "hearts" were renamed to "lives", so a run in progress survives the update. */
+function migrateSave(s: any): GameState {
+  const cardId = (id: string) => (id === 'extra-heart' ? 'extra-life' : id)
+  if ('hearts' in s) {
+    s.lives = s.hearts
+    delete s.hearts
+  }
+  for (const c of s.cards ?? []) c.id = cardId(c.id)
+  for (const o of s.shop?.cards ?? []) if (o) o.id = cardId(o.id)
+  if (s.round) {
+    if ('lostHeart' in s.round) {
+      s.round.lostLife = s.round.lostHeart
+      delete s.round.lostHeart
+    }
+    for (const t of s.round.board?.tiles ?? []) if (t.bonus === 'heart') t.bonus = 'life'
+  }
+  for (const cmd of s.history ?? []) {
+    if (cmd.type !== 'debug') continue
+    if ('hearts' in cmd) {
+      cmd.lives = cmd.hearts
+      delete cmd.hearts
+    }
+    if (cmd.cards) cmd.cards = cmd.cards.map(cardId)
+  }
+  return s
+}
+
 export function readSave(): GameState | null {
   try {
     const raw = localStorage.getItem(SAVE_KEY)
     if (!raw) return null
     const s = JSON.parse(raw) as GameState
-    return s.v === 1 ? s : null
+    return s.v === 1 ? migrateSave(s) : null
   } catch {
     return null
   }

@@ -1,7 +1,7 @@
 export const MAX_ROUND = 12
 export const CARD_SLOTS = 5
 export const CONSUMABLE_SLOTS = 2
-export const BASE_HEARTS = 3
+export const BASE_LIVES = 3
 export const BASE_STREAK_STEP = 0.04
 
 export interface RoundSpec {

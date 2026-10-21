@@ -5,7 +5,7 @@ import {
   CONSUMABLES,
   CARD_SLOTS,
   CONSUMABLE_SLOTS,
-  maxHearts,
+  maxLives,
   neighbors,
   newState,
   makeRng,
@@ -102,7 +102,7 @@ export function roundCommand(s: GameState, stats: BotStats): Command {
   for (let slot = 0; slot < s.consumables.length; slot++) {
     const id = s.consumables[slot]
     if ((id === 'surge' || id === 'ward' || id === 'kindle') && r.moves >= 3) return { type: 'useConsumable', slot }
-    if (id === 'bandage' && s.hearts < maxHearts(s)) return { type: 'useConsumable', slot }
+    if (id === 'bandage' && s.lives < maxLives(s)) return { type: 'useConsumable', slot }
   }
   const { mines, safe } = analyse(s)
   if (safe.size) return { type: 'reveal', index: safe.values().next().value as number }

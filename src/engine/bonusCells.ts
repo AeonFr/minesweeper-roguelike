@@ -8,5 +8,5 @@ export const BONUS_INFO: Record<BonusKind, { name: string; emoji: string; desc: 
   crystal: { name: 'Crystal Ball', emoji: '🔮', desc: 'Uncovers a random hidden safe tile.' },
   gift: { name: 'Gift Box', emoji: '🎁', desc: 'Gives a random consumable, or $1 if your slots are full.' },
   shield: { name: 'Shield', emoji: '🛡️', desc: 'The next mine you hit this round is harmless.' },
-  heart: { name: 'Heart', emoji: '❤️', desc: 'Restores a heart, or $1 if you are at full health.' },
+  life: { name: 'Life', emoji: '🙂', desc: 'Restores a life, or $1 if you already have all your lives.' },
 }

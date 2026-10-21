@@ -18,7 +18,7 @@ export function Menu() {
           <Icon file={UI_ICON.logo} size={64} />
         </div>
         <h1>Mine Rogue</h1>
-        <p>Minesweeper meets roguelike. Twelve rounds. Three hearts. Bonus cards, wild multipliers, and one very bad idea per tile.</p>
+        <p>Minesweeper meets roguelike. Twelve rounds. Three lives. Bonus cards, wild multipliers, and one very bad idea per tile.</p>
         <div className="menu-actions">
           {save && (
             <button className="btn primary big" onClick={continueRun}>

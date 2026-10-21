@@ -75,10 +75,10 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
 .pill b { font-size: 14px; }
 .pill.money { margin-left: auto; min-width: 62px; text-align: center; background: #000; color: #00ff00; font-size: 14px; font-family: 'Courier New', monospace; }
 .pill.money b { font-size: 16px; display: inline-block; min-width: 2ch; text-align: left; }
-.hearts { display: flex; gap: 0; width: 98px; justify-content: flex-end; flex: none; background: #fff; box-shadow: var(--sunken); padding: 3px; height: 30px; align-items: center; }
-.heart { font-size: 17px; width: 22px; text-align: center; line-height: 1; }
-.heart.none { visibility: hidden; }
-.heart.empty { filter: grayscale(1); opacity: .5; }
+.lives { display: flex; gap: 0; width: 98px; justify-content: flex-end; flex: none; background: #fff; box-shadow: var(--sunken); padding: 3px; height: 30px; align-items: center; }
+.life { font-size: 17px; width: 22px; text-align: center; line-height: 1; }
+.life.none { visibility: hidden; }
+.life.empty { filter: grayscale(1); opacity: .5; }
 
 /* ───────── score bar ───────── */
 .scorebar { flex: none; display: flex; flex-direction: column; gap: 5px; padding: 6px; background: var(--face); box-shadow: var(--raised); }
@@ -272,9 +272,9 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
   .menu-btn { padding: 0 6px; }
   .pill { padding: 5px 5px; }
   .pill.money { min-width: 0; }
-  .hearts { width: auto; padding: 3px 2px; }
-  .heart { width: 18px; }
-  .heart .icon { width: 16px; height: 16px; }
+  .lives { width: auto; padding: 3px 2px; }
+  .life { width: 18px; }
+  .life .icon { width: 16px; height: 16px; }
 }
 
 /* desktop has room: 14px is the minimum there (12px stays the floor on small screens) */

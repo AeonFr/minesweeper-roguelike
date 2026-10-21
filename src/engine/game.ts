@@ -2,7 +2,7 @@ import { flood, generate, emptyBoard, neighbors } from './board'
 import { CARDS, CARD_LIST, cardBaseMult } from './cards'
 import { CONSUMABLES, CONSUMABLE_LIST } from './consumables'
 import {
-  BASE_HEARTS,
+  BASE_LIVES,
   BASE_STREAK_STEP,
   CARD_SLOTS,
   CONSUMABLE_SLOTS,
@@ -33,9 +33,9 @@ const r2 = (n: number) => Math.round(n * 100) / 100
 
 // ───────────────────────── derived values ─────────────────────────
 
-export function maxHearts(s: GameState): number {
-  let h = BASE_HEARTS
-  for (const c of s.cards) h += CARDS[c.id].maxHearts ?? 0
+export function maxLives(s: GameState): number {
+  let h = BASE_LIVES
+  for (const c of s.cards) h += CARDS[c.id].maxLives ?? 0
   return h
 }
 
@@ -88,7 +88,7 @@ export function newState(seed: string): GameState {
     phase: 'round',
     roundNo: 1,
     money: 2,
-    hearts: BASE_HEARTS,
+    lives: BASE_LIVES,
     cards: [],
     consumables: [],
     round: null,
@@ -117,11 +117,11 @@ function startRound(s: GameState, rng: Rng) {
     shield: 0,
     moves: 0,
     mistakes: 0,
-    lostHeart: false,
+    lostLife: false,
     streakSafe: false,
     last: null,
   }
-  s.hearts = maxHearts(s)
+  s.lives = maxLives(s)
   s.phase = 'round'
   s.shop = null
   s.payout = []
@@ -179,9 +179,9 @@ function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, coll
       return got
     },
     heal(n) {
-      const before = s.hearts
-      s.hearts = Math.min(maxHearts(s), s.hearts + n)
-      if (s.hearts > before) note(card, '+1 heart', 'Restored 1 heart.')
+      const before = s.lives
+      s.lives = Math.min(maxLives(s), s.lives + n)
+      if (s.lives > before) note(card, '+1 life', 'Restored 1 life.')
     },
     keepStreak() {
       s.round!.streakSafe = true
@@ -278,13 +278,13 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]
       r.shield++
       events.push({ text: '🛡️ shield', detail: 'Shield: the next mine you hit this round is harmless.' })
       break
-    case 'heart':
-      if (s.hearts < maxHearts(s)) {
-        s.hearts++
-        events.push({ text: '❤️ +1 heart', detail: 'Heart: you recovered 1 heart.' })
+    case 'life':
+      if (s.lives < maxLives(s)) {
+        s.lives++
+        events.push({ text: '🙂 +1 life', detail: 'Life: you recovered 1 life.' })
       } else {
         s.money += 1
-        events.push({ text: '❤️ +$1', detail: 'Heart: you were at full health, so you got $1 instead.' })
+        events.push({ text: '🙂 +$1', detail: 'Life: you already had all your lives, so you got $1 instead.' })
       }
       break
   }
@@ -327,19 +327,19 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
     if (r.shield > 0) {
       r.shield--
       blocked = true
-      events.push({ text: '🛡️ blast absorbed', detail: 'You hit a mine, but a shield absorbed it: no heart lost and your streak is kept.' })
+      events.push({ text: '🛡️ blast absorbed', detail: 'You hit a mine, but a shield absorbed it: no life lost and your streak is kept.' })
     } else {
-      r.lostHeart = true
+      r.lostLife = true
       const revive = s.cards.findIndex((c) => CARDS[c.id].revive)
-      if (s.hearts <= 1 && revive >= 0) {
-        events.push({ text: `${CARDS[s.cards[revive].id].emoji} saved you`, detail: `${CARDS[s.cards[revive].id].name} saved you from losing your last heart, and was used up.` })
+      if (s.lives <= 1 && revive >= 0) {
+        events.push({ text: `${CARDS[s.cards[revive].id].emoji} saved you`, detail: `${CARDS[s.cards[revive].id].name} saved you from losing your last life, and was used up.` })
         s.cards.splice(revive, 1)
       } else {
-        s.hearts--
+        s.lives--
       }
       if (!r.streakSafe) r.streak = 0
     }
-    if (s.hearts <= 0) {
+    if (s.lives <= 0) {
       s.phase = 'lost'
       r.last = { no: r.moves, points: 0, mult: multBreakdown(s).total, gain: 0, revealed: 0, hit: true, blocked, events }
       return true
@@ -403,9 +403,9 @@ function finishRound(s: GameState, rng: Rng) {
   const r = s.round!
   const b = r.board
   const lines: PayoutLine[] = [{ label: `Round ${s.roundNo} cleared`, amount: roundReward(s.roundNo) }]
-  const heartBonus = Math.floor(s.hearts / 2)
-  if (heartBonus > 0) lines.push({ label: `${s.hearts} hearts left`, amount: heartBonus })
-  if (!r.lostHeart) lines.push({ label: 'Flawless: no heart lost', amount: 1 })
+  const lifeBonus = Math.floor(s.lives / 2)
+  if (lifeBonus > 0) lines.push({ label: `${s.lives} lives left`, amount: lifeBonus })
+  if (!r.lostLife) lines.push({ label: 'Flawless: no life lost', amount: 1 })
   const hidden = b.safeLeft / (b.cols * b.rows - b.mines)
   const skip = Math.min(1, Math.floor(hidden / 0.2))
   if (skip > 0) lines.push({ label: `Left ${Math.round(hidden * 100)}% of the board`, amount: skip })
@@ -413,7 +413,7 @@ function finishRound(s: GameState, rng: Rng) {
   s.payout = lines
   for (const c of s.cards) CARDS[c.id].onRoundEnd?.(ctx(s, rng, c, null, true, []))
   s.stats.totalScore = r2(s.stats.totalScore + r.score)
-  s.hearts = maxHearts(s)
+  s.lives = maxLives(s)
   if (s.roundNo >= MAX_ROUND) {
     s.phase = 'won'
   } else {
@@ -489,8 +489,8 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
       break
     }
     case 'bandage':
-      if (s.hearts >= maxHearts(s)) return 'Already at full health'
-      s.hearts++
+      if (s.lives >= maxLives(s)) return 'Already at full lives'
+      s.lives++
       break
     case 'surge':
       r.bonusMult = r2(r.bonusMult + 0.25)
@@ -560,7 +560,7 @@ function handle(s: GameState, rng: Rng, cmd: Command): true | string {
       s.money -= o.price
       s.cards.push(newCard(s, o.id))
       s.shop!.cards[cmd.offer] = null
-      s.hearts = maxHearts(s)
+      s.lives = maxLives(s)
       return true
     }
     case 'buyConsumable': {
@@ -578,7 +578,7 @@ function handle(s: GameState, rng: Rng, cmd: Command): true | string {
       if (s.phase !== 'shop' || !c) return fail('Not available')
       s.money += sellPrice(CARDS[c.id].price)
       s.cards.splice(cmd.slot, 1)
-      s.hearts = maxHearts(s)
+      s.lives = maxLives(s)
       return true
     }
     case 'sellConsumable': {
@@ -613,7 +613,7 @@ function handle(s: GameState, rng: Rng, cmd: Command): true | string {
       } else if (cmd.phase === 'round' || cmd.round !== undefined || cmd.cards) {
         startRound(s, rng)
       }
-      if (cmd.hearts !== undefined) s.hearts = cmd.hearts
+      if (cmd.lives !== undefined) s.lives = cmd.lives
       return true
     }
   }

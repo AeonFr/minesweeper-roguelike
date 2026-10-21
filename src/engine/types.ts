@@ -1,7 +1,7 @@
 import type { Rng } from './rng'
 
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
-export type BonusKind = 'coin' | 'star' | 'spark' | 'heart' | 'flame' | 'crystal' | 'gift' | 'shield'
+export type BonusKind = 'coin' | 'star' | 'spark' | 'life' | 'flame' | 'crystal' | 'gift' | 'shield'
 export type Phase = 'round' | 'shop' | 'won' | 'lost'
 
 export interface Tile {
@@ -55,7 +55,7 @@ export interface RoundState {
   shield: number
   moves: number
   mistakes: number
-  lostHeart: boolean
+  lostLife: boolean
   streakSafe: boolean
   last: LastMove | null
 }
@@ -99,7 +99,7 @@ export interface GameState {
   phase: Phase
   roundNo: number
   money: number
-  hearts: number
+  lives: number
   cards: CardInst[]
   consumables: string[]
   round: RoundState | null
@@ -127,7 +127,7 @@ export type Command =
       round?: number
       phase?: 'round' | 'shop'
       money?: number
-      hearts?: number
+      lives?: number
       cards?: string[]
       consumables?: string[]
     }
@@ -177,7 +177,7 @@ export interface CardDef {
   streakStep?: (c: CardInst, s: GameState) => number
   /** multiplies the score of the move */
   moveScoreMult?: (m: MoveInfo, c: CardInst, s: GameState) => number
-  maxHearts?: number
+  maxLives?: number
   /** saves you from a lethal hit once, then is destroyed */
   revive?: boolean
   onMove?: (x: HookCtx) => void

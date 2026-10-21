@@ -12,7 +12,7 @@ installDebugApi()
  *   ?seed=abc            start a fresh run with that seed
  *   ?round=5&scene=shop  jump straight to the shop after round 5 (needs seed or starts one)
  *   ?cards=crown,vault   give cards (debug)   ?items=sprout,ward   give consumables
- *   ?money=30&hearts=1
+ *   ?money=30&lives=1
  *   ?cmds=<base64 JSON>  replay commands after setup
  *   ?hide=ui,fx          hide layers: ui, board, fx, bg, bonus
  *   ?debug               show debug panel
@@ -38,7 +38,7 @@ function bootFromUrl() {
     })
   }
   if (q.has('cmds')) dispatchAll(JSON.parse(atob(q.get('cmds')!)) as Command[])
-  if (q.has('hearts')) dispatch({ type: 'debug', hearts: num('hearts') })
+  if (q.has('lives')) dispatch({ type: 'debug', lives: num('lives') })
 }
 
 bootFromUrl()

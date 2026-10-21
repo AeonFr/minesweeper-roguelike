@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { MAX_ROUND, maxHearts, type GameState } from '../engine'
+import { MAX_ROUND, maxLives, type GameState } from '../engine'
 import { infoTip, tipProps } from '../tip'
 import { Icon } from './Icon'
 import { UI_ICON } from './icons'
 import { SettingsModal } from './Settings'
 
-const HEART_SLOTS = 4
+const LIFE_SLOTS = 4
 
 export function Hud({ game }: { game: GameState }) {
   const [open, setOpen] = useState(false)
-  const max = maxHearts(game)
+  const max = maxLives(game)
   return (
     <header className={`hud layer-ui`}>
       <button className="menu-btn" onClick={() => setOpen(true)}>
@@ -28,28 +28,28 @@ export function Hud({ game }: { game: GameState }) {
             <div className="tip-title">
               <span className="tip-name"><Icon file={UI_ICON.money} size={16} px={false} /> Money</span>
             </div>
-            <p>Spend it in the shop between rounds. You earn more for clearing harder rounds, keeping hearts, and playing flawlessly.</p>
+            <p>Spend it in the shop between rounds. You earn more for clearing harder rounds, keeping lives, and playing flawlessly.</p>
           </>
         ))}
       >
         $<b>{game.money}</b>
       </div>
       <div
-        className="hearts"
+        className="lives"
         {...tipProps(() => (
           <>
             <div className="tip-title">
-              <span className="tip-name"><Icon file={UI_ICON.heart} size={16} px={false} /> Hearts</span>
+              <span className="tip-name"><Icon file={UI_ICON.life} size={16} /> Lives</span>
             </div>
             <p>
-              {game.hearts} of {max}. Hitting a mine costs one. Hearts refill after every round, and the ones left at the end pay $1 each.
+              {game.lives} of {max}. Hitting a mine costs one. Lives refill after every round, and the ones left at the end pay $1 each.
             </p>
           </>
         ))}
       >
-        {Array.from({ length: HEART_SLOTS }, (_, k) => (
-          <span key={k} className={`heart ${k < game.hearts ? 'full' : k < max ? 'empty' : 'none'}`}>
-            <Icon file={UI_ICON.heart} size={18} px={false} />
+        {Array.from({ length: LIFE_SLOTS }, (_, k) => (
+          <span key={k} className={`life ${k < game.lives ? 'full' : k < max ? 'empty' : 'none'}`}>
+            <Icon file={UI_ICON.life} size={16} />
           </span>
         ))}
       </div>

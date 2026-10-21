@@ -45,7 +45,7 @@ const BONUS_WEIGHTS: [BonusKind, number][] = [
   ['crystal', 4],
   ['gift', 6],
   ['shield', 4],
-  ['heart', 3],
+  ['life', 3],
 ]
 
 /**

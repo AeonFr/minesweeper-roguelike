@@ -84,7 +84,7 @@ function ScoreBar({ game }: { game: GameState }) {
               ? last.hit
                 ? last.blocked
                   ? 'You hit a mine, but a shield absorbed it.'
-                  : 'You hit a mine: a heart was lost and your streak was reset.'
+                  : 'You hit a mine: a life was lost and your streak was reset.'
                 : `Your last move scored ${fmt(last.gain)} points in total: tiles × multiplier, plus any bonus tiles and card effects.`
               : 'Your points from the last move show up here.',
           )}
@@ -429,14 +429,14 @@ function EndOverlay({ game }: { game: GameState }) {
 export function RoundView({ game, onContinue }: { game: GameState; onContinue?: () => void }) {
   const [mode, setMode] = useState<'dig' | 'flag'>('dig')
   const r = game.round!
-  const danger = game.phase === 'round' && game.hearts <= 1
+  const danger = game.phase === 'round' && game.lives <= 1
   const spec = roundSpec(game.roundNo)
   const flagsLeft = mineCount(spec) - r.board.tiles.filter((t) => t.flagged || t.exploded).length
   return (
     <div className="screen round-screen">
       <Hud game={game} />
       <ScoreBar game={game} />
-      <Win title={`Minesweeper - Round ${game.roundNo}${danger ? ' (LAST HEART)' : ''}`} className={`board-wrap ${danger ? 'danger' : ''}`}>
+      <Win title={`Minesweeper - Round ${game.roundNo}${danger ? ' (LAST LIFE)' : ''}`} className={`board-wrap ${danger ? 'danger' : ''}`}>
         <div className="board-meta layer-ui">
           <span {...infoTip('Board size', `${spec.cols} columns × ${spec.rows} rows.`)}>
             {spec.cols}×{spec.rows}

@@ -28,8 +28,8 @@ function useAudioSync(game: GameState | null) {
   }, [game?.seed])
   useEffect(() => {
     setScene(!game ? 'menu' : game.phase === 'shop' ? 'shop' : 'round')
-    setIntensity(game && game.phase === 'round' ? (game.hearts <= 1 ? 2 : game.hearts === 2 ? 1 : 0) : 0)
-  }, [game?.phase, game?.hearts])
+    setIntensity(game && game.phase === 'round' ? (game.lives <= 1 ? 2 : game.lives === 2 ? 1 : 0) : 0)
+  }, [game?.phase, game?.lives])
   useEffect(() => {
     const p = prev.current
     prev.current = game
