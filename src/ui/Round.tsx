@@ -83,7 +83,7 @@ function ScoreBar({ game }: { game: GameState }) {
             last
               ? last.hit
                 ? last.blocked
-                  ? 'You hit a mine, but a shield absorbed it.'
+                  ? 'You hit a mine, but the firewall absorbed it.'
                   : 'You hit a mine: a life was lost and your streak was reset.'
                 : `Your last move scored ${fmt(last.gain)} points in total: tiles × multiplier, plus any bonus tiles and card effects.`
               : 'Your points from the last move show up here.',
@@ -99,7 +99,7 @@ function ScoreBar({ game }: { game: GameState }) {
           <b>{r.streak}</b>
         </div>
         {r.shield > 0 && (
-          <div className="shield" {...infoTip('Shield', `The next ${r.shield > 1 ? r.shield + ' mines you hit are' : 'mine you hit is'} harmless.`)}>
+          <div className="shield" {...infoTip('Firewall', `The next ${r.shield > 1 ? r.shield + ' mines you hit are' : 'mine you hit is'} harmless.`)}>
             <Icon file={UI_ICON.shield} size={16} px={false} />
             {r.shield}
           </div>

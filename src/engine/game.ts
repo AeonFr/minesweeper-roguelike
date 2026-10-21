@@ -244,47 +244,47 @@ function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]
   switch (kind) {
     case 'coin': {
       s.money += 1
-      events.push({ text: '🪙 +$1', detail: 'Coin Purse: you earned $1.' })
+      events.push({ text: '🪙 +$1', detail: 'Paycheck: you earned $1.' })
       break
     }
     case 'star': {
       const p = 2 + s.roundNo
       r.score = r2(r.score + p)
-      events.push({ text: `⭐ +${p} pts`, detail: `Shooting Star: +${p} points added straight to your score.` })
+      events.push({ text: `⭐ +${p} pts`, detail: `Gold Star: +${p} points added straight to your score.` })
       break
     }
     case 'spark':
       r.bonusMult = r2(r.bonusMult + 0.15)
-      events.push({ text: '✨ +0.15x', detail: 'Spark: +0.15 added to your base multiplier for the rest of this round.' })
+      events.push({ text: '✨ +0.15x', detail: 'DirectX: +0.15 added to your base multiplier for the rest of this round.' })
       break
     case 'flame':
       r.streak += 4
-      events.push({ text: '🔥 +4 streak', detail: 'Flame: your streak went up by 4, which raises your multiplier.' })
+      events.push({ text: '🔥 +4 streak', detail: 'Mouse Speed: your streak went up by 4, which raises your multiplier.' })
       break
     case 'crystal':
-      if (revealRandomSafe(s, rng, 1, events)) events.push({ text: '🔮 tile revealed', detail: 'Crystal Ball: a random hidden safe tile was uncovered for free.' })
+      if (revealRandomSafe(s, rng, 1, events)) events.push({ text: '🔮 tile revealed', detail: 'Web Search: a random hidden safe tile was uncovered for free.' })
       break
     case 'gift':
       if (s.consumables.length < CONSUMABLE_SLOTS) {
         const c = rng.pick(CONSUMABLE_LIST)
         s.consumables.push(c.id)
-        events.push({ text: `🎁 ${c.emoji} ${c.name}`, detail: `Gift Box: you received ${c.name} (${c.desc})` })
+        events.push({ text: `🎁 ${c.emoji} ${c.name}`, detail: `Free Software: you received ${c.name} (${c.desc})` })
       } else {
         s.money += 1
-        events.push({ text: '🎁 +$1', detail: 'Gift Box: your item slots were full, so you got $1 instead.' })
+        events.push({ text: '🎁 +$1', detail: 'Free Software: your item slots were full, so you got $1 instead.' })
       }
       break
     case 'shield':
       r.shield++
-      events.push({ text: '🛡️ shield', detail: 'Shield: the next mine you hit this round is harmless.' })
+      events.push({ text: '🛡️ shield', detail: 'Firewall: the next mine you hit this round is harmless.' })
       break
     case 'life':
       if (s.lives < maxLives(s)) {
         s.lives++
-        events.push({ text: '🙂 +1 life', detail: 'Life: you recovered 1 life.' })
+        events.push({ text: '🙂 +1 life', detail: 'Day Off: you recovered 1 life.' })
       } else {
         s.money += 1
-        events.push({ text: '🙂 +$1', detail: 'Life: you already had all your lives, so you got $1 instead.' })
+        events.push({ text: '🙂 +$1', detail: 'Day Off: you already had all your lives, so you got $1 instead.' })
       }
       break
   }

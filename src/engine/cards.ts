@@ -5,45 +5,45 @@ const r2 = (n: number) => Math.round(n * 100) / 100
 const defs: CardDef[] = [
   // ───────── common ─────────
   {
-    id: 'steady-hand', name: 'Steady Hand', emoji: '🧤', rarity: 'common', price: 4,
+    id: 'steady-hand', name: 'Ergonomic Mouse', emoji: '🧤', rarity: 'common', price: 4,
     desc: 'Adds x0.05 to your base multiplier.',
     baseMult: () => 0.05,
   },
   {
-    id: 'pocket-change', name: 'Pocket Change', emoji: '🪙', rarity: 'common', price: 5,
+    id: 'pocket-change', name: 'Petty Cash', emoji: '🪙', rarity: 'common', price: 5,
     desc: 'Earn $1 at the end of every round.',
     onRoundEnd: (x) => x.addMoney(1),
   },
   {
-    id: 'lucky-clover', name: 'Lucky Clover', emoji: '🍀', rarity: 'common', price: 6,
+    id: 'lucky-clover', name: 'Auto-Complete', emoji: '🍀', rarity: 'common', price: 6,
     desc: 'Every 10th successful move, uncover a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 10 === 0 && x.revealSafe(1)) x.say('🍀 uncovered a tile')
     },
   },
   {
-    id: 'lucky-socks', name: 'Lucky Socks', emoji: '🧦', rarity: 'common', price: 6,
+    id: 'lucky-socks', name: 'Overtime', emoji: '🧦', rarity: 'common', price: 6,
     desc: 'Every 3rd successful move adds x0.05 to the base multiplier (this round).',
     onMove: (x) => {
       if (x.move!.no % 3 === 0) x.addMult(0.05)
     },
   },
   {
-    id: 'counting-beads', name: 'Counting Beads', emoji: '📿', rarity: 'common', price: 6,
+    id: 'counting-beads', name: 'Calculator', emoji: '📿', rarity: 'common', price: 6,
     desc: 'Every tile numbered 1 you uncover adds +0.5 points (not multiplied).',
     onMove: (x) => {
       if (x.move!.count1 > 0) x.addScore(r2(x.move!.count1 * 0.5))
     },
   },
   {
-    id: 'tidy-sweeper', name: 'Tidy Sweeper', emoji: '🧹', rarity: 'common', price: 5,
+    id: 'tidy-sweeper', name: 'Disk Cleanup', emoji: '🧹', rarity: 'common', price: 5,
     desc: 'Moves that uncover 4 or more tiles add +3 points.',
     onMove: (x) => {
       if (x.move!.revealed >= 4) x.addScore(3)
     },
   },
   {
-    id: 'cautious-cat', name: 'Cautious Cat', emoji: '🐱', rarity: 'common', price: 6,
+    id: 'cautious-cat', name: 'Office Assistant', emoji: '🐱', rarity: 'common', price: 6,
     desc: 'The first time you hit a mine each round, your streak is not reset.',
     onMineHit: (x) => {
       if (x.card.counter === 0) {
@@ -54,7 +54,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'piggy-bank', name: 'Piggy Bank', emoji: '🐷', rarity: 'common', price: 5,
+    id: 'piggy-bank', name: 'Savings Account', emoji: '🐷', rarity: 'common', price: 5,
     desc: 'Earn $1 at the end of a round if you still have 3 or more lives.',
     onRoundEnd: (x) => {
       if (x.s.lives >= 3) x.addMoney(1)
@@ -62,19 +62,19 @@ const defs: CardDef[] = [
   },
   // ───────── uncommon ─────────
   {
-    id: 'magnifier', name: 'Magnifier', emoji: '🔍', rarity: 'uncommon', price: 6,
+    id: 'magnifier', name: 'Zoom In', emoji: '🔍', rarity: 'uncommon', price: 6,
     desc: 'Every tile numbered 2 you uncover adds +0.75 points (not multiplied).',
     onMove: (x) => {
       if (x.move!.count2 > 0) x.addScore(r2(x.move!.count2 * 0.75))
     },
   },
   {
-    id: 'hot-streak', name: 'Hot Streak', emoji: '🔥', rarity: 'uncommon', price: 7,
+    id: 'hot-streak', name: 'Speed Typist', emoji: '🔥', rarity: 'uncommon', price: 7,
     desc: 'Each consecutive successful move adds x0.06 instead of x0.04.',
     streakStep: () => 0.02,
   },
   {
-    id: 'tax-collector', name: 'Tax Collector', emoji: '🏦', rarity: 'uncommon', price: 7,
+    id: 'tax-collector', name: 'Accounting', emoji: '🏦', rarity: 'uncommon', price: 7,
     desc: 'End of round: earn $1 for every 10 successful moves (max $3).',
     onRoundEnd: (x) => {
       const n = Math.min(3, Math.floor(x.s.round!.moves / 10))
@@ -82,40 +82,40 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'gambler', name: 'Gambler', emoji: '🎲', rarity: 'uncommon', price: 7,
+    id: 'gambler', name: 'Office Solitaire', emoji: '🎲', rarity: 'uncommon', price: 7,
     desc: 'Every successful move has a 1 in 14 chance to earn $1.',
     onMove: (x) => {
       if (x.rng.chance(1 / 14)) x.addMoney(1)
     },
   },
   {
-    id: 'first-blood', name: 'First Blood', emoji: '🩸', rarity: 'uncommon', price: 8,
+    id: 'first-blood', name: 'New Document', emoji: '🩸', rarity: 'uncommon', price: 8,
     desc: 'Your first move of each round scores x1.5.',
     moveScoreMult: (m) => (m.no === 1 ? 1.5 : 1),
   },
   {
-    id: 'sapling', name: 'Sapling', emoji: '🌱', rarity: 'uncommon', price: 8,
+    id: 'sapling', name: 'Auto-Update', emoji: '🌱', rarity: 'uncommon', price: 8,
     desc: 'Every successful move adds x0.01 to the base multiplier (up to x0.2 per round).',
     onMove: (x) => {
       if (x.card.mult < 0.2) x.addMult(0.01)
     },
   },
   {
-    id: 'lantern', name: 'Lantern', emoji: '🏮', rarity: 'uncommon', price: 7,
+    id: 'lantern', name: 'System Restore', emoji: '🏮', rarity: 'uncommon', price: 7,
     desc: 'Hitting a mine uncovers 2 random hidden safe tiles.',
     onMineHit: (x) => {
       if (x.revealSafe(2)) x.say('🏮 lit the way')
     },
   },
   {
-    id: 'compass', name: 'Compass', emoji: '🧭', rarity: 'uncommon', price: 8,
+    id: 'compass', name: 'Spell Check', emoji: '🧭', rarity: 'uncommon', price: 8,
     desc: 'Every 10th successful move, flag a random hidden mine.',
     onMove: (x) => {
       if (x.move!.no % 10 === 0 && x.flagMines(1)) x.say('🧭 flagged a mine')
     },
   },
   {
-    id: 'scout', name: 'Scout', emoji: '🔭', rarity: 'uncommon', price: 7,
+    id: 'scout', name: 'Find Files', emoji: '🔭', rarity: 'uncommon', price: 7,
     desc: 'Every bonus tile you uncover adds x0.05 to the base multiplier (this round).',
     onBonus: (x) => x.addMult(0.05),
   },
@@ -126,12 +126,12 @@ const defs: CardDef[] = [
     maxLives: 1,
   },
   {
-    id: 'crown', name: 'Crown', emoji: '👑', rarity: 'rare', price: 12,
+    id: 'crown', name: 'Employee of the Month', emoji: '👑', rarity: 'rare', price: 12,
     desc: 'Adds x0.2 to your base multiplier.',
     baseMult: () => 0.2,
   },
   {
-    id: 'vault', name: 'Vault', emoji: '💼', rarity: 'rare', price: 11,
+    id: 'vault', name: 'Company Safe', emoji: '💼', rarity: 'rare', price: 11,
     desc: 'End of round: earn $1 for every $8 you hold (max $3).',
     onRoundEnd: (x) => {
       const n = Math.min(3, Math.floor(x.s.money / 8))
@@ -139,12 +139,12 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'twin-mirror', name: 'Twin Mirror', emoji: '🪞', rarity: 'rare', price: 11,
+    id: 'twin-mirror', name: 'Copy & Paste', emoji: '🪞', rarity: 'rare', price: 11,
     desc: 'Every 4th successful move scores double.',
     moveScoreMult: (m) => (m.no % 4 === 0 ? 2 : 1),
   },
   {
-    id: 'lucky-seven', name: 'Lucky Seven', emoji: '7️⃣', rarity: 'rare', price: 12,
+    id: 'lucky-seven', name: 'Macro', emoji: '7️⃣', rarity: 'rare', price: 12,
     desc: 'Every 7th successful move adds x0.15 to the base multiplier (this round).',
     onMove: (x) => {
       if (x.move!.no % 7 === 0) {
@@ -153,7 +153,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'gravedigger', name: 'Grave Digger', emoji: '⚰️', rarity: 'rare', price: 11,
+    id: 'gravedigger', name: 'Recycle Bin', emoji: '⚰️', rarity: 'rare', price: 11,
     desc: 'Every mine you hit earns $1 and adds x0.1 to the base multiplier (this round).',
     onMineHit: (x) => {
       x.addMoney(1)
@@ -161,33 +161,33 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'harvest', name: 'Harvest', emoji: '🌾', rarity: 'rare', price: 10,
+    id: 'harvest', name: 'Mail Merge', emoji: '🌾', rarity: 'rare', price: 10,
     desc: 'Every successful move adds +1 point.',
     onMove: (x) => x.addScore(1),
   },
   // ───────── epic ─────────
   {
-    id: 'golden-ratio', name: 'Golden Ratio', emoji: '🌀', rarity: 'epic', price: 20,
+    id: 'golden-ratio', name: 'Quarterly Report', emoji: '🌀', rarity: 'epic', price: 20,
     desc: 'Your base multiplier is multiplied by 1.3.',
     baseMul: 1.3,
   },
   {
-    id: 'phoenix', name: 'Phoenix Feather', emoji: '🦅', rarity: 'epic', price: 20,
+    id: 'phoenix', name: 'Tape Backup', emoji: '🦅', rarity: 'epic', price: 20,
     desc: 'When you would lose your last life, you survive instead. Destroyed on use.',
     revive: true,
   },
   {
-    id: 'fortune-wheel', name: 'Fortune Wheel', emoji: '🎡', rarity: 'epic', price: 18,
+    id: 'fortune-wheel', name: 'Year-End Bonus', emoji: '🎡', rarity: 'epic', price: 18,
     desc: 'End of round: earn a random $1 to $4.',
     onRoundEnd: (x) => x.addMoney(1 + x.rng.int(4)),
   },
   {
-    id: 'metronome', name: 'Metronome', emoji: '🎼', rarity: 'epic', price: 19,
+    id: 'metronome', name: 'Shortcut Keys', emoji: '🎼', rarity: 'epic', price: 19,
     desc: 'While your streak is 15 or more, each move adds x0.07 instead of x0.04.',
     streakStep: (_c, s) => (s.round && s.round.streak >= 15 ? 0.03 : 0),
   },
   {
-    id: 'philosopher', name: 'Scholar', emoji: '🧪', rarity: 'epic', price: 19,
+    id: 'philosopher', name: 'Help Desk', emoji: '🧪', rarity: 'epic', price: 19,
     desc: 'Tiles numbered 3 or higher add 75% of their value again (not multiplied).',
     onMove: (x) => {
       if (x.move!.sum3 > 0) x.addScore(r2(x.move!.sum3 * 0.75))
@@ -195,12 +195,12 @@ const defs: CardDef[] = [
   },
   // ───────── legendary ─────────
   {
-    id: 'infinity', name: 'Infinity', emoji: '♾️', rarity: 'legendary', price: 28,
+    id: 'infinity', name: 'Mainframe', emoji: '♾️', rarity: 'legendary', price: 28,
     desc: 'Adds x0.35 to your base multiplier.',
     baseMult: () => 0.35,
   },
   {
-    id: 'midas', name: 'Midas Touch', emoji: '✋', rarity: 'legendary', price: 26,
+    id: 'midas', name: 'Stock Options', emoji: '✋', rarity: 'legendary', price: 26,
     desc: 'Every second tile numbered 4 or higher you uncover earns $1 (counted per round).',
     onMove: (x) => {
       if (x.move!.count4 > 0) {
@@ -212,76 +212,76 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'heartbeat', name: 'Heartbeat', emoji: '💓', rarity: 'legendary', price: 28,
+    id: 'heartbeat', name: 'Auto-Save', emoji: '💓', rarity: 'legendary', price: 28,
     desc: 'Every 25th successful move, heal 1 life.',
     onMove: (x) => {
       if (x.move!.no % 25 === 0) x.heal(1)
     },
   },
   {
-    id: 'omniscience', name: 'All-Seeing Eye', emoji: '👁️', rarity: 'legendary', price: 26,
+    id: 'omniscience', name: 'Audit', emoji: '👁️', rarity: 'legendary', price: 26,
     desc: 'Every successful move has a 1 in 7 chance to flag a random hidden mine.',
     onMove: (x) => {
       if (x.rng.chance(1 / 7) && x.flagMines(1)) x.say('👁️ saw a mine')
     },
   },
   {
-    id: 'black-hole', name: 'Black Hole', emoji: '🕳️', rarity: 'legendary', price: 26,
+    id: 'black-hole', name: 'Select All', emoji: '🕳️', rarity: 'legendary', price: 26,
     desc: 'Moves that uncover 12 or more tiles score double.',
     moveScoreMult: (m) => (m.revealed >= 12 ? 2 : 1),
   },
   // ───────── mine-flagging and tile-uncovering ─────────
   {
-    id: 'dowsing-rod', name: 'Dowsing Rod', emoji: '🪄', rarity: 'common', price: 6,
+    id: 'dowsing-rod', name: 'Highlighter', emoji: '🪄', rarity: 'common', price: 6,
     desc: 'After your first move, flag 1 random hidden mine.',
     onMove: (x) => {
       if (x.move!.no === 1 && x.flagMines(1)) x.say('🪄 flagged a mine')
     },
   },
   {
-    id: 'pickaxe', name: 'Pickaxe', emoji: '⛏️', rarity: 'common', price: 6,
+    id: 'pickaxe', name: 'Binder Clip', emoji: '⛏️', rarity: 'common', price: 6,
     desc: 'After your first move, uncover 2 random hidden safe tiles.',
     onMove: (x) => {
       if (x.move!.no === 1 && x.revealSafe(2)) x.say('⛏️ dug up tiles')
     },
   },
   {
-    id: 'bloodhound', name: 'Sniffer Dog', emoji: '🐕', rarity: 'uncommon', price: 7,
+    id: 'bloodhound', name: 'Search Indexer', emoji: '🐕', rarity: 'uncommon', price: 7,
     desc: 'Whenever a move uncovers a tile numbered 4 or higher, flag a random hidden mine.',
     onMove: (x) => {
       if (x.move!.maxN >= 4 && x.flagMines(1)) x.say('🐕 sniffed out a mine')
     },
   },
   {
-    id: 'spade', name: 'Spade', emoji: '🥄', rarity: 'uncommon', price: 7,
+    id: 'spade', name: 'File Cabinet', emoji: '🥄', rarity: 'uncommon', price: 7,
     desc: 'Moves that uncover 4 or more tiles also uncover 1 random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.revealed >= 4 && x.revealSafe(1)) x.say('🥄 dug a bit deeper')
     },
   },
   {
-    id: 'scavenger', name: 'Looter', emoji: '🦝', rarity: 'uncommon', price: 7,
+    id: 'scavenger', name: 'Lost & Found', emoji: '🦝', rarity: 'uncommon', price: 7,
     desc: 'Every mine you hit flags 1 random hidden mine.',
     onMineHit: (x) => {
       if (x.flagMines(1)) x.say('🦝 salvaged the blast')
     },
   },
   {
-    id: 'radar', name: 'Radar', emoji: '📡', rarity: 'rare', price: 13,
+    id: 'radar', name: 'Flatbed Scanner', emoji: '📡', rarity: 'rare', price: 13,
     desc: 'Every 6th successful move, flag a random hidden mine.',
     onMove: (x) => {
       if (x.move!.no % 6 === 0 && x.flagMines(1)) x.say('📡 contact')
     },
   },
   {
-    id: 'excavator', name: 'Excavator', emoji: '🚜', rarity: 'rare', price: 12,
+    id: 'excavator', name: 'Defrag', emoji: '🚜', rarity: 'rare', price: 12,
     desc: 'Every 5th successful move, uncover a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 5 === 0 && x.revealSafe(1)) x.say('🚜 cleared a tile')
     },
   },
   {
-    id: 'aftershock', name: 'Tremor', emoji: '🌋', rarity: 'epic', price: 19,
+    id: 'aftershock', name: 'Blue Screen', emoji: '🌋', rarity: 'epic', price: 19,
     desc: 'Every mine you hit flags 1 random hidden mine and uncovers 1 random hidden safe tile.',
     onMineHit: (x) => {
       x.flagMines(1)
@@ -289,7 +289,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'cartographer', name: 'Atlas', emoji: '🗺️', rarity: 'epic', price: 20,
+    id: 'cartographer', name: 'Org Chart', emoji: '🗺️', rarity: 'epic', price: 20,
     desc: 'After your first move, flag a tenth of the mines on the board (rounded down).',
     onMove: (x) => {
       const b = x.s.round!.board
@@ -297,7 +297,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'satellite', name: 'Satellite', emoji: '🛰️', rarity: 'legendary', price: 28,
+    id: 'satellite', name: 'T1 Line', emoji: '🛰️', rarity: 'legendary', price: 28,
     desc: 'Every 5th successful move flags a random hidden mine. Every 15th also uncovers a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 5 === 0) x.flagMines(1)
