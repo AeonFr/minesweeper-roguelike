@@ -38,7 +38,7 @@ code { background: #fff; box-shadow: var(--sunken); padding: 0 4px; }
 .muted { color: #404040; }
 h1, h2, h3, p { margin: 0; }
 
-/* 98.css pins these to 11px, which is hard to read in the pixel font: 12px is the minimum anywhere. */
+/* 98.css pins these to 11px, which is hard to read in the pixel font: 12px is the minimum on small screens (14px on desktop, see the end of this file). */
 .title-bar, .window, button, input, label, legend, li[role='tab'], option, select, table, textarea, ul.tree-view { font-size: 12px; }
 
 /* ───────── layers (for focused screenshots) ───────── */
@@ -275,4 +275,15 @@ html[data-hide~='bonus'] .bonus-art { display: none !important; }
   .hearts { width: auto; padding: 3px 2px; }
   .heart { width: 18px; }
   .heart .icon { width: 16px; height: 16px; }
+}
+
+/* desktop has room: 14px is the minimum there (12px stays the floor on small screens) */
+@media (min-width: 900px) {
+  :root, body, button, input, select { font-size: 14px; }
+  .title-bar, .window, button, input, label, legend, li[role='tab'], option, select, table, textarea, ul.tree-view,
+  .chipbox small, .card-name, .big .card-name, .shop-screen .card-name, .chip, .mode-toggle small, .btn.small, .shop-screen .btn.small,
+  .help h3, .rarity, .modal h3, .debug button, .debug select { font-size: 14px; }
+  .score-line, .tip-title, .next-info b, .modal .why { font-size: 14px; }
+  .modal h2 { font-size: 16px; }
+  .debug { font-size: 12px; }
 }
