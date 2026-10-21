@@ -6,12 +6,15 @@ const r2 = (n: number) => Math.round(n * 100) / 100
 /** (game.ts has maxLives, but it imports this file) */
 const hasAllLives = (s: GameState) => s.lives >= BASE_LIVES + s.cards.reduce((n, c) => n + (CARDS[c.id]?.maxLives ?? 0), 0)
 
+/** Starter cards are strongest on the small early boards and fade out: [rounds 1-4, rounds 5-8, round 9+]. */
+const fade = <T,>(roundNo: number, v: [T, T, T]) => (roundNo <= 4 ? v[0] : roundNo <= 8 ? v[1] : v[2])
+
 const defs: CardDef[] = [
   // ───────── common ─────────
   {
     id: 'steady-hand', name: 'Steady Hand', emoji: '🧤', rarity: 'common', price: 4,
-    desc: 'Adds x0.05 to your base multiplier.',
-    baseMult: () => 0.05,
+    desc: 'Adds x0.1 to your base multiplier in rounds 1-4, x0.05 in rounds 5-8 and x0.02 after that.',
+    baseMult: (_c, s) => fade(s.roundNo, [0.1, 0.05, 0.02]),
   },
   {
     id: 'pocket-change', name: 'Pocket Change', emoji: '🪙', rarity: 'common', price: 5,
@@ -19,14 +22,14 @@ const defs: CardDef[] = [
     onRoundEnd: (x) => x.addMoney(1),
   },
   {
-    id: 'lucky-clover', name: 'Autofill', emoji: '🍀', rarity: 'common', price: 6,
+    id: 'lucky-clover', name: 'Autofill', emoji: '🍀', rarity: 'uncommon', price: 7,
     desc: 'Every 10th successful move, uncover a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 10 === 0 && x.revealSafe(1)) x.say('🍀 uncovered a tile')
     },
   },
   {
-    id: 'lucky-socks', name: 'Crunch Time', emoji: '🧦', rarity: 'common', price: 6,
+    id: 'lucky-socks', name: 'Crunch Time', emoji: '🧦', rarity: 'uncommon', price: 7,
     desc: 'Every 3rd successful move adds x0.05 to the base multiplier (this round).',
     onMove: (x) => {
       if (x.move!.no % 3 === 0) x.addMult(0.05)
@@ -241,16 +244,17 @@ const defs: CardDef[] = [
   // ───────── mine-flagging and tile-uncovering ─────────
   {
     id: 'dowsing-rod', name: 'Red Marker', emoji: '🪄', rarity: 'common', price: 6,
-    desc: 'After your first move, flag 1 random hidden mine.',
+    desc: 'After your first move, flag 2 random hidden mines (rounds 1-4) or 1 (rounds 5-8). Does nothing after round 8.',
     onMove: (x) => {
-      if (x.move!.no === 1 && x.flagMines(1)) x.say('🪄 flagged a mine')
+      const n = fade(x.s.roundNo, [2, 1, 0])
+      if (x.move!.no === 1 && n > 0 && x.flagMines(n)) x.say('🪄 flagged a mine')
     },
   },
   {
     id: 'pickaxe', name: 'Toolbox', emoji: '⛏️', rarity: 'common', price: 6,
-    desc: 'After your first move, uncover 2 random hidden safe tiles.',
+    desc: 'After your first move, uncover 3 random hidden safe tiles (rounds 1-4), 2 (rounds 5-8) or 1 (round 9 on).',
     onMove: (x) => {
-      if (x.move!.no === 1 && x.revealSafe(2)) x.say('⛏️ dug up tiles')
+      if (x.move!.no === 1 && x.revealSafe(fade(x.s.roundNo, [3, 2, 1]))) x.say('⛏️ dug up tiles')
     },
   },
   {

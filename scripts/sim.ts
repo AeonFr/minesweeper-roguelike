@@ -103,6 +103,27 @@ if (mode === 'curve') {
   }
 }
 
+if (mode === 'profile') {
+  // How much each card helps at different points of a run. Win rate saturates early, so also look at mines hit
+  // (mistakes per round) and how far over the target the score ends up (score/target).
+  const n = Number(a1 ?? 400)
+  const rounds = [2, 5, 8, 11]
+  const sum = (round: number, ids: string[]) => {
+    const rs = Array.from({ length: n }, (_, i) => isolatedRound(`prof-${round}-${i}`, round, ids))
+    return { mistakes: avg(rs.map((r) => r.mistakes)), ratio: avg(rs.map((r) => r.scoreRatio)), win: avg(rs.map((r) => (r.won ? 1 : 0))) }
+  }
+  const base = rounds.map((r) => sum(r, []))
+  console.log(`mines hit per round, and win%, vs no card: ${rounds.map((r, i) => `r${r} ${base[i].mistakes.toFixed(2)} mines ${pct(base[i].win)}`).join(' | ')}`)
+  console.log('card                 rarity     price | mines avoided per round (r2 r5 r8 r11)  | dWin% (r2 r5 r8 r11)')
+  for (const c of CARD_LIST) {
+    const ss = rounds.map((r) => sum(r, [c.id]))
+    const f1 = (x: number) => x.toFixed(2).padStart(5)
+    console.log(
+      `${(c.emoji + ' ' + c.name).padEnd(22)}${c.rarity.padEnd(10)} $${String(c.price).padStart(2)} | ${ss.map((x, i) => f1(base[i].mistakes - x.mistakes)).join(' ')}  | ${ss.map((x, i) => (((x.win - base[i].win) * 100).toFixed(0)).padStart(4)).join(' ')}`,
+    )
+  }
+}
+
 if (mode === 'loadouts') {
   const k = Number(a1 ?? 4)
   const n = Number(a2 ?? 300)

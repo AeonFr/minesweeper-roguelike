@@ -6,6 +6,7 @@ import {
   CARD_SLOTS,
   CONSUMABLE_SLOTS,
   maxLives,
+  sellPrice,
   neighbors,
   newState,
   makeRng,
@@ -124,7 +125,20 @@ export function shopCommands(s: GameState): Command[] {
   let cons = s.consumables.length
   const offers = (s.shop?.cards ?? []).map((o, i) => ({ o, i })).filter((x) => x.o)
   offers.sort((a, b) => b.o!.price - a.o!.price)
+  // owned cards, cheapest first: the bot swaps the cheapest one for a clearly better offer when its slots are full
+  const owned = s.cards.map((c, slot) => ({ slot, price: CARDS[c.id].price })).sort((a, b) => a.price - b.price)
+  const sold: number[] = []
   for (const { o, i } of offers) {
+    if (cards >= CARD_SLOTS && owned.length) {
+      const worst = owned[0]
+      if (o!.price >= worst.price + 4 && money + sellPrice(worst.price) >= o!.price) {
+        out.push({ type: 'sellCard', slot: worst.slot - sold.filter((x) => x < worst.slot).length })
+        sold.push(worst.slot)
+        owned.shift()
+        money += sellPrice(worst.price)
+        cards--
+      }
+    }
     if (cards < CARD_SLOTS && money >= o!.price) {
       out.push({ type: 'buyCard', offer: i })
       money -= o!.price
