@@ -45,8 +45,9 @@ export function rarityWeights(upcomingRound: number) {
   const r = upcomingRound
   return {
     common: Math.max(25, 64 - 3 * r),
-    uncommon: 30,
-    rare: r >= 3 ? Math.min(22, 6 + 2 * (r - 3)) : 0,
+    // the first shop (round 2 upcoming) only has about $5-6 to spend, so only cheap cards show up there
+    uncommon: r >= 3 ? 30 : 0,
+    rare: r >= 4 ? Math.min(22, 6 + 2 * (r - 4)) : 0,
     epic: r >= 6 ? Math.min(16, 3 * (r - 5)) : 0,
     legendary: r >= 9 ? Math.min(10, 2 * (r - 8)) : 0,
   }

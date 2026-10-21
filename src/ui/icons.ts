@@ -84,7 +84,7 @@ export const UI_ICON = {
   music: 'loudspeaker_rays',
   sound: 'loudspeaker_wave',
   logo: 'minesweeper',
-  streak: 'mouse',
+  streak: 'media_player_stream_sun4',
   shield: 'world_lock',
   refresh: 'media_player_stream_conn2',
   money: 'cd_audio_cd',

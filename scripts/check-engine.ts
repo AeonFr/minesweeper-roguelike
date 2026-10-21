@@ -1,5 +1,5 @@
 /** Engine invariants. Run: npx tsx scripts/check-engine.ts */
-import { applyInPlace, CONSUMABLE_LIST, newState } from '../src/engine'
+import { applyInPlace, CARDS, CONSUMABLE_LIST, newState } from '../src/engine'
 
 let failed = 0
 const check = (ok: boolean, msg: string) => {
@@ -29,6 +29,20 @@ for (let i = 0; i < 300; i++) {
   }
 }
 check(true, 'shop consumable offers are distinct')
+
+// the first shop (after round 1, about $5-6 to spend) only offers common cards, rerolls included
+{
+  let bad = 0
+  for (let i = 0; i < 300; i++) {
+    const s = newState(`first-shop-${i}`)
+    applyInPlace(s, { type: 'debug', phase: 'shop', round: 1, money: 99 }, false)
+    for (let k = 0; k < 3; k++) {
+      for (const o of s.shop!.cards) if (o && CARDS[o.id].rarity !== 'common') bad++
+      applyInPlace(s, { type: 'reroll' }, false)
+    }
+  }
+  check(bad === 0, `first shop only offers common cards (${bad} others)`)
+}
 
 if (failed) {
   console.log(`${failed} check(s) failed`)

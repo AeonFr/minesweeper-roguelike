@@ -1,6 +1,10 @@
-import type { CardDef, CardInst } from './types'
+import { BASE_LIVES } from './difficulty'
+import type { CardDef, CardInst, GameState } from './types'
 
 const r2 = (n: number) => Math.round(n * 100) / 100
+
+/** (game.ts has maxLives, but it imports this file) */
+const hasAllLives = (s: GameState) => s.lives >= BASE_LIVES + s.cards.reduce((n, c) => n + (CARDS[c.id]?.maxLives ?? 0), 0)
 
 const defs: CardDef[] = [
   // ───────── common ─────────
@@ -168,8 +172,8 @@ const defs: CardDef[] = [
   // ───────── epic ─────────
   {
     id: 'golden-ratio', name: 'Pivot Table', emoji: '🌀', rarity: 'epic', price: 20,
-    desc: 'Your base multiplier is multiplied by 1.3.',
-    baseMul: 1.3,
+    desc: 'Your base multiplier is multiplied by 1.5.',
+    baseMul: 1.5,
   },
   {
     id: 'phoenix', name: 'Last Backup', emoji: '🦅', rarity: 'epic', price: 20,
@@ -178,13 +182,14 @@ const defs: CardDef[] = [
   },
   {
     id: 'fortune-wheel', name: 'Payday', emoji: '🎡', rarity: 'epic', price: 18,
-    desc: 'End of round: earn a random $1 to $4.',
-    onRoundEnd: (x) => x.addMoney(1 + x.rng.int(4)),
+    desc: 'Every round starts with +0.3 on your base multiplier. End of round: earn a random $1 to $3.',
+    onRoundStart: (x) => x.addMult(0.3),
+    onRoundEnd: (x) => x.addMoney(1 + x.rng.int(3)),
   },
   {
     id: 'metronome', name: 'Muscle Memory', emoji: '🎼', rarity: 'epic', price: 19,
-    desc: 'While your streak is 15 or more, each move adds x0.07 instead of x0.04.',
-    streakStep: (_c, s) => (s.round && s.round.streak >= 15 ? 0.03 : 0),
+    desc: 'While your streak is 4 or more, each move adds x0.1 instead of x0.04.',
+    streakStep: (_c, s) => (s.round && s.round.streak >= 4 ? 0.06 : 0),
   },
   {
     id: 'philosopher', name: 'Scholar', emoji: '🧪', rarity: 'epic', price: 19,
@@ -196,13 +201,14 @@ const defs: CardDef[] = [
   // ───────── legendary ─────────
   {
     id: 'infinity', name: 'Mainframe', emoji: '♾️', rarity: 'legendary', price: 28,
-    desc: 'Adds x0.35 to your base multiplier.',
-    baseMult: () => 0.35,
+    desc: 'Adds x0.7 to your base multiplier.',
+    baseMult: () => 0.7,
   },
   {
     id: 'midas', name: 'Stock Options', emoji: '✋', rarity: 'legendary', price: 26,
-    desc: 'Every second tile numbered 4 or higher you uncover earns $1 (counted per round).',
+    desc: 'Tiles numbered 3 or higher add x0.02 to the base multiplier per point on them (a 4 adds x0.08, this round). Every second tile numbered 4 or higher also earns $1.',
     onMove: (x) => {
+      if (x.move!.sum3 > 0) x.addMult(r2(0.02 * x.move!.sum3))
       if (x.move!.count4 > 0) {
         const before = Math.floor(x.card.counter / 2)
         x.card.counter += x.move!.count4
@@ -213,9 +219,11 @@ const defs: CardDef[] = [
   },
   {
     id: 'heartbeat', name: 'Autosave', emoji: '💓', rarity: 'legendary', price: 28,
-    desc: 'Every 25th successful move, heal 1 life.',
+    desc: 'Every 10th successful move, heal 1 life, or add x0.1 to the base multiplier (this round) if you have all your lives.',
     onMove: (x) => {
-      if (x.move!.no % 25 === 0) x.heal(1)
+      if (x.move!.no % 10 !== 0) return
+      if (hasAllLives(x.s)) x.addMult(0.1)
+      else x.heal(1)
     },
   },
   {
@@ -227,8 +235,8 @@ const defs: CardDef[] = [
   },
   {
     id: 'black-hole', name: 'Disk Partition', emoji: '🕳️', rarity: 'legendary', price: 26,
-    desc: 'Moves that uncover 12 or more tiles score double.',
-    moveScoreMult: (m) => (m.revealed >= 12 ? 2 : 1),
+    desc: 'Moves that uncover 3 or more tiles score double.',
+    moveScoreMult: (m) => (m.revealed >= 3 ? 2 : 1),
   },
   // ───────── mine-flagging and tile-uncovering ─────────
   {

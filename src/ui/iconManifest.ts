@@ -35,6 +35,7 @@ export const ICON_SIZES: Record<string, number[]> = {
   loudspeaker_wave: [16],
   mailbox_world: [16, 48],
   media_player_stream_conn2: [16],
+  media_player_stream_sun4: [16],
   minesweeper: [32],
   mouse: [16, 48],
   msagent: [16, 48],
