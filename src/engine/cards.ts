@@ -54,7 +54,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'piggy-bank', name: '401(k)', emoji: '🐷', rarity: 'common', price: 5,
+    id: 'piggy-bank', name: 'Pension', emoji: '🐷', rarity: 'common', price: 5,
     desc: 'Earn $1 at the end of a round if you still have 3 or more lives.',
     onRoundEnd: (x) => {
       if (x.s.lives >= 3) x.addMoney(1)
@@ -69,12 +69,12 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'hot-streak', name: 'Hot Streak', emoji: '🔥', rarity: 'uncommon', price: 7,
+    id: 'hot-streak', name: 'Fast Forward', emoji: '🔥', rarity: 'uncommon', price: 7,
     desc: 'Each consecutive successful move adds x0.06 instead of x0.04.',
     streakStep: () => 0.02,
   },
   {
-    id: 'tax-collector', name: 'Tax Collector', emoji: '🏦', rarity: 'uncommon', price: 7,
+    id: 'tax-collector', name: 'Payroll', emoji: '🏦', rarity: 'uncommon', price: 7,
     desc: 'End of round: earn $1 for every 10 successful moves (max $3).',
     onRoundEnd: (x) => {
       const n = Math.min(3, Math.floor(x.s.round!.moves / 10))
@@ -101,14 +101,14 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'lantern', name: 'Ctrl+Z', emoji: '🏮', rarity: 'uncommon', price: 7,
+    id: 'lantern', name: 'Rollback', emoji: '🏮', rarity: 'uncommon', price: 7,
     desc: 'Hitting a mine uncovers 2 random hidden safe tiles.',
     onMineHit: (x) => {
       if (x.revealSafe(2)) x.say('🏮 lit the way')
     },
   },
   {
-    id: 'compass', name: 'Red Squiggle', emoji: '🧭', rarity: 'uncommon', price: 8,
+    id: 'compass', name: 'Bookmark', emoji: '🧭', rarity: 'uncommon', price: 8,
     desc: 'Every 10th successful move, flag a random hidden mine.',
     onMove: (x) => {
       if (x.move!.no % 10 === 0 && x.flagMines(1)) x.say('🧭 flagged a mine')
@@ -121,7 +121,7 @@ const defs: CardDef[] = [
   },
   // ───────── rare ─────────
   {
-    id: 'extra-life', name: 'Reboot', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
+    id: 'extra-life', name: 'Continue?', emoji: '❤️‍🔥', rarity: 'rare', price: 14,
     desc: 'You have a 4th life. The life is lost if this card is sold.',
     maxLives: 1,
   },
@@ -274,7 +274,7 @@ const defs: CardDef[] = [
     },
   },
   {
-    id: 'excavator', name: 'Defrag', emoji: '🚜', rarity: 'rare', price: 12,
+    id: 'excavator', name: 'Cache Hit', emoji: '🚜', rarity: 'rare', price: 12,
     desc: 'Every 5th successful move, uncover a random hidden safe tile.',
     onMove: (x) => {
       if (x.move!.no % 5 === 0 && x.revealSafe(1)) x.say('🚜 cleared a tile')
