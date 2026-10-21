@@ -19,6 +19,7 @@ import type {
   BonusKind,
   CardInst,
   Command,
+  GameEvent,
   GameState,
   HookCtx,
   MoveInfo,
@@ -136,7 +137,7 @@ function startRound(s: GameState, rng: Rng) {
 
 // ───────────────────────── hook context ─────────────────────────
 
-function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, collect: boolean, events: string[]): HookCtx {
+function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, collect: boolean, events: GameEvent[]): HookCtx {
   const def = CARDS[card.id]
   const label = `${def.emoji} ${def.name}`
   return {
@@ -152,27 +153,27 @@ function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, coll
     },
     addMult(n) {
       card.mult = r2(card.mult + n)
-      card.flash.push(`+${n}x`)
+      card.flash.push(`+${n}x mult`)
     },
     addScore(n) {
       s.round!.score = r2(s.round!.score + n)
       card.score += n
-      card.flash.push(`+${n}`)
+      card.flash.push(`+${n} pts`)
     },
     revealSafe(n) {
       const got = revealRandomSafe(s, rng, n, events)
-      if (got) card.flash.push(`${got} tile${got > 1 ? 's' : ''}`)
+      if (got) card.flash.push(`uncovered ${got} tile${got > 1 ? 's' : ''}`)
       return got
     },
     flagMines(n) {
       const got = flagRandomMines(s, rng, n)
-      if (got) card.flash.push('🚩')
+      if (got) card.flash.push(`flagged ${got} mine${got > 1 ? 's' : ''}`)
       return got
     },
     heal(n) {
       const before = s.hearts
       s.hearts = Math.min(maxHearts(s), s.hearts + n)
-      if (s.hearts > before) card.flash.push('+❤️')
+      if (s.hearts > before) card.flash.push('+1 heart')
     },
     keepStreak() {
       s.round!.streakSafe = true
@@ -185,7 +186,7 @@ function ctx(s: GameState, rng: Rng, card: CardInst, move: MoveInfo | null, coll
 
 // ───────────────────────── board helpers ─────────────────────────
 
-function revealRandomSafe(s: GameState, rng: Rng, n: number, events: string[]): number {
+function revealRandomSafe(s: GameState, rng: Rng, n: number, events: GameEvent[]): number {
   const b = s.round!.board
   if (!b.generated) return 0
   const cand = rng.shuffle(b.tiles.map((_, i) => i).filter((i) => !b.tiles[i].mine && !b.tiles[i].revealed && !b.tiles[i].flagged))
@@ -209,7 +210,7 @@ function flagRandomMines(s: GameState, rng: Rng, n: number): number {
 }
 
 /** Reveals without it counting as a move: scores at the current multiplier, streak untouched. */
-function revealFree(s: GameState, rng: Rng, idx: number, events: string[]): number {
+function revealFree(s: GameState, rng: Rng, idx: number, events: GameEvent[]): number {
   const r = s.round!
   const newly = flood(r.board, idx)
   if (!newly.length) return 0
@@ -220,7 +221,7 @@ function revealFree(s: GameState, rng: Rng, idx: number, events: string[]): numb
   return newly.length
 }
 
-function claimBonuses(s: GameState, rng: Rng, tiles: number[], events: string[]) {
+function claimBonuses(s: GameState, rng: Rng, tiles: number[], events: GameEvent[]) {
   const b = s.round!.board
   for (const i of tiles) {
     const kind = b.tiles[i].bonus
@@ -230,52 +231,52 @@ function claimBonuses(s: GameState, rng: Rng, tiles: number[], events: string[])
   }
 }
 
-function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: string[]) {
+function applyBonus(s: GameState, rng: Rng, kind: BonusKind, events: GameEvent[]) {
   const r = s.round!
   switch (kind) {
     case 'coin': {
       s.money += 1
-      events.push('🪙 +$1')
+      events.push({ text: '🪙 +$1', detail: 'Coin Purse: you earned $1.' })
       break
     }
     case 'star': {
       const p = 2 + s.roundNo
       r.score = r2(r.score + p)
-      events.push(`⭐ +${p}`)
+      events.push({ text: `⭐ +${p} pts`, detail: `Shooting Star: +${p} points added straight to your score.` })
       break
     }
     case 'spark':
       r.bonusMult = r2(r.bonusMult + 0.15)
-      events.push('✨ +0.15x')
+      events.push({ text: '✨ +0.15x', detail: 'Spark: +0.15 added to your base multiplier for the rest of this round.' })
       break
     case 'flame':
       r.streak += 4
-      events.push('🔥 +4 streak')
+      events.push({ text: '🔥 +4 streak', detail: 'Flame: your streak went up by 4, which raises your multiplier.' })
       break
     case 'crystal':
-      if (revealRandomSafe(s, rng, 1, events)) events.push('🔮 tile revealed')
+      if (revealRandomSafe(s, rng, 1, events)) events.push({ text: '🔮 tile revealed', detail: 'Crystal Ball: a random hidden safe tile was uncovered for free.' })
       break
     case 'gift':
       if (s.consumables.length < CONSUMABLE_SLOTS) {
         const c = rng.pick(CONSUMABLE_LIST)
         s.consumables.push(c.id)
-        events.push(`🎁 ${c.emoji} ${c.name}`)
+        events.push({ text: `🎁 ${c.emoji} ${c.name}`, detail: `Gift Box: you received ${c.name} (${c.desc})` })
       } else {
         s.money += 1
-        events.push('🎁 +$1')
+        events.push({ text: '🎁 +$1', detail: 'Gift Box: your item slots were full, so you got $1 instead.' })
       }
       break
     case 'shield':
       r.shield++
-      events.push('🛡️ shield')
+      events.push({ text: '🛡️ shield', detail: 'Shield: the next mine you hit this round is harmless.' })
       break
     case 'heart':
       if (s.hearts < maxHearts(s)) {
         s.hearts++
-        events.push('❤️ +1 heart')
+        events.push({ text: '❤️ +1 heart', detail: 'Heart: you recovered 1 heart.' })
       } else {
         s.money += 1
-        events.push('❤️ +$1')
+        events.push({ text: '❤️ +$1', detail: 'Heart: you were at full health, so you got $1 instead.' })
       }
       break
   }
@@ -297,7 +298,7 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
   }
   for (const c of s.cards) c.flash = []
   const before = r.score
-  const events: string[] = []
+  const events: GameEvent[] = []
   const mines = valid.filter((i) => b.tiles[i].mine)
   const safe = valid.filter((i) => !b.tiles[i].mine)
   s.stats.moves++
@@ -315,12 +316,12 @@ function doMove(s: GameState, rng: Rng, indices: number[]): true | string {
     if (r.shield > 0) {
       r.shield--
       blocked = true
-      events.push('🛡️ shield absorbed the blast')
+      events.push({ text: '🛡️ blast absorbed', detail: 'You hit a mine, but a shield absorbed it: no heart lost and your streak is kept.' })
     } else {
       r.lostHeart = true
       const revive = s.cards.findIndex((c) => CARDS[c.id].revive)
       if (s.hearts <= 1 && revive >= 0) {
-        events.push(`${CARDS[s.cards[revive].id].emoji} saved you from the last blast`)
+        events.push({ text: `${CARDS[s.cards[revive].id].emoji} saved you`, detail: `${CARDS[s.cards[revive].id].name} saved you from losing your last heart, and was used up.` })
         s.cards.splice(revive, 1)
       } else {
         s.hearts--
@@ -441,7 +442,7 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
   if (!id) return 'Empty slot'
   const r = s.round!
   const b = r.board
-  const events: string[] = []
+  const events: GameEvent[] = []
   const hiddenSafe = () => b.tiles.map((_, i) => i).filter((i) => !b.tiles[i].mine && !b.tiles[i].revealed && !b.tiles[i].flagged)
   const needBoard = !b.generated && ['sprout', 'scope', 'sniffer', 'flashlight', 'dowse', 'shovel'].includes(id)
   if (needBoard) return 'Uncover a tile first'
@@ -503,7 +504,7 @@ function useConsumable(s: GameState, rng: Rng, slot: number): true | string {
   }
   s.consumables.splice(slot, 1)
   const def = CONSUMABLES[id]
-  events.unshift(`${def.emoji} ${def.name}`)
+  events.unshift({ text: `${def.emoji} ${def.name}`, detail: `Used ${def.name}: ${def.desc}` })
   r.last = { no: r.moves, points: 0, mult: multBreakdown(s).total, gain: 0, revealed: 0, hit: false, blocked: false, events }
   checkWin(s, rng)
   return true

@@ -24,6 +24,12 @@ export interface Board {
   safeLeft: number
 }
 
+/** Something that happened during a move: a short label for the chip, and the full explanation for its tooltip. */
+export interface GameEvent {
+  text: string
+  detail: string
+}
+
 export interface LastMove {
   no: number
   /** raw tile score from revealed tiles */
@@ -34,7 +40,7 @@ export interface LastMove {
   revealed: number
   hit: boolean
   blocked: boolean
-  events: string[]
+  events: GameEvent[]
 }
 
 export interface RoundState {

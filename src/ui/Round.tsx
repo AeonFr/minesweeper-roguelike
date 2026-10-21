@@ -108,8 +108,8 @@ function ScoreBar({ game }: { game: GameState }) {
       </div>
       <div className="events">
         {last?.events.slice(0, 3).map((e, i) => (
-          <span key={`${game.stats.moves}-${i}`} className="event" {...infoTip('Triggered by your last move', <Rich text={e} />)}>
-            <Rich text={e} />
+          <span key={`${game.stats.moves}-${i}`} className="event" {...infoTip('Triggered by your last move', <Rich text={e.detail} size={16} />)}>
+            <Rich text={e.text} />
           </span>
         ))}
       </div>
@@ -357,7 +357,12 @@ function RoundClear({ game, onContinue }: { game: GameState; onContinue: () => v
         <ul className="triggers">
           {last.events.map((e, i) => (
             <li key={`e${i}`}>
-              <Rich text={e} size={16} />
+              <span>
+                <b>
+                  <Rich text={e.text} size={16} />
+                </b>{' '}
+                {e.detail}
+              </span>
             </li>
           ))}
           {effects.map((c) => (
